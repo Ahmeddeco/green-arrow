@@ -1,0 +1,83 @@
+{
+	"dependencies": {
+		"@base-ui/react": "^1.5.0",
+		"@better-auth/kysely-adapter": "1.6.11",
+		"@conform-to/react": "^1.19.3",
+		"@conform-to/zod": "^1.19.3",
+		"@hugeicons/core-free-icons": "^4.2.0",
+		"@hugeicons/react": "^1.1.6",
+		"@prisma/adapter-pg": "^7.8.0",
+		"@prisma/client": "^7.8.0",
+		"@uploadthing/react": "^7.3.3",
+		"better-auth": "^1.6.11",
+		"class-variance-authority": "^0.7.1",
+		"clsx": "^2.1.1",
+		"cmdk": "^1.1.1",
+		"date-fns": "^4.4.0",
+		"dotenv": "^17.4.2",
+		"embla-carousel-react": "^8.6.0",
+		"faker": "^6.6.6",
+		"input-otp": "^1.4.2",
+		"lucide": "^1.17.0",
+		"lucide-react": "^1.17.0",
+		"next": "16.2.7",
+		"next-themes": "^0.4.6",
+		"pg": "^8.21.0",
+		"radix-ui": "^1.5.0",
+		"react": "19.2.4",
+		"react-day-picker": "^10.0.1",
+		"react-dom": "19.2.4",
+		"react-icons": "^5.6.0",
+		"react-resizable-panels": "^4.11.2",
+		"recharts": "3.8.0",
+		"shadcn": "^4.10.0",
+		"sonner": "^2.0.7",
+		"tailwind-merge": "^3.6.0",
+		"tw-animate-css": "^1.4.0",
+		"uploadthing": "^7.7.4",
+		"vaul": "^1.1.2",
+		"zod": "^3.25.76",
+		"zod-prisma-types": "^3.3.11",
+		"zustand": "^5.0.14"
+	},
+	"devDependencies": {
+		"@faker-js/faker": "^10.4.0",
+		"@tailwindcss/postcss": "^4.3.0",
+		"@types/node": "^20.19.42",
+		"@types/pg": "^8.20.0",
+		"@types/react": "^19.2.17",
+		"@types/react-dom": "^19.2.3",
+		"eslint": "^9.39.4",
+		"eslint-config-next": "16.2.7",
+		"prisma": "^7.8.0",
+		"tailwindcss": "^4.3.0",
+		"typescript": "^5.9.3",
+		"vitest": "^4.1.8"
+	},
+	"name": "green-arrow",
+	"pnpm": {
+		"overrides": {
+			"kysely": "0.28.17"
+		}
+	},
+	"prisma": {
+		"schema": "/prisma/schema.prisma",
+		"seed": "ts-node src/seed/seed.ts"
+	},
+	"private": true,
+	"scripts": {
+		"build": "next build",
+		"dev": "next dev",
+		"lint": "eslint",
+		"mastra": "mastra dev --dir src/bot",
+		"postinstall": "prisma generate",
+		"push": "prisma db push",
+		"reset": "prisma db push --force-reset",
+		"seed": "prisma db seed",
+		"start": "next start",
+		"studio": "prisma studio",
+		"test": "vitest"
+	},
+	"type": "module",
+	"version": "0.1.0"
+}
