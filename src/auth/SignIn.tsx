@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button"
 import { auth } from "@/lib/auth"
 import Form from "next/form"
 import { redirect } from "next/navigation"
-import { FaGoogle } from "react-icons/fa6"
+import { FcGoogle } from "react-icons/fc"
 
 export default async function SignIn() {
 	const signIn = async () => {
@@ -19,9 +19,9 @@ export default async function SignIn() {
 
 	return (
 		<Form action={signIn}>
-			<Button type="submit" size={"sm"}>
+			<Button type="submit" size={"lg"} variant={"outline"}>
 				Sign In
-				<FaGoogle />
+				<FcGoogle />
 			</Button>
 		</Form>
 	)

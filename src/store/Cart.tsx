@@ -2,7 +2,15 @@
 "use client"
 
 import { useCartStore } from "@/store/cartStore"
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger, SheetFooter } from "@/components/ui/sheet"
+import {
+	Sheet,
+	SheetContent,
+	SheetHeader,
+	SheetTitle,
+	SheetTrigger,
+	SheetFooter,
+	SheetDescription,
+} from "@/components/ui/sheet"
 import { Minus, Plus, ShoppingBag, X } from "lucide-react"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import Image from "next/image"
@@ -25,14 +33,15 @@ export default function Cart() {
 			<SheetTrigger>
 				<div className="relative">
 					<ShoppingBag />
-					<div className="rounded-full bg-primary text-neutral-50 size-5 absolute -bottom-2 -right-2 flex items-center justify-center">
-						<span className="text-xs font-medium">{items.length}</span>
+					<div className="rounded-full bg-primary  size-5 absolute -bottom-2 -right-2 flex items-center justify-center">
+						<span className="text-xs font-medium text-background">{items.length}</span>
 					</div>
 				</div>
 			</SheetTrigger>
-			<SheetContent className="max-w-lg " dir="rtl">
+			<SheetContent className="max-w-lg lg:max-w-3xl " dir="rtl">
 				<SheetHeader>
-					<SheetTitle className="text-center">سلة المشتريات</SheetTitle>
+					<SheetTitle>سلة المشتريات</SheetTitle>
+					<SheetDescription>تأكد من إتمام عملية الشراء</SheetDescription>
 				</SheetHeader>
 				<Separator />
 				<ScrollArea className="flex flex-col gap-4 p-4 w-full h-full max-h-[60vh]">

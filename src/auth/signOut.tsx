@@ -17,7 +17,7 @@ export default function SignOut() {
 	}
 
 	return (
-		<Button onClick={handleSignOut} disabled={isPending} variant={"destructive"} size={"full"} className="w-full">
+		<Button onClick={handleSignOut} disabled={isPending} variant={"destructive"} className="w-full">
 			{isPending ? "Signing out..." : "SignOut"}
 		</Button>
 	)

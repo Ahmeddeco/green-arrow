@@ -24,7 +24,7 @@ export default async function UserButton() {
 							<Image src={user.image ?? "/icons/noImage.svg"} alt={"user"} fill className="rounded-full object-cover" />
 						</div>
 					</DropdownMenuTrigger>
-					<DropdownMenuContent align="start" sideOffset={8} className="w-fit max-w-2xl">
+					<DropdownMenuContent align="start" sideOffset={8} className="w-fit max-w-xl">
 						<DropdownMenuLabel>
 							<div className="w-full aspect-square relative rounded-xl">
 								<Image src={user.image ?? "/icons/noImage.svg"} alt={"user"} fill className="rounded-xl object-cover" />
@@ -37,7 +37,7 @@ export default async function UserButton() {
 						<DropdownMenuItem>
 							<p>{user.email}</p>
 						</DropdownMenuItem>
-						<DropdownMenuItem>
+						<DropdownMenuItem asChild>
 							<SignOut />
 						</DropdownMenuItem>
 					</DropdownMenuContent>
