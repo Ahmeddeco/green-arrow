@@ -4,6 +4,10 @@ import { FaFacebookF, FaInstagram, FaXTwitter } from "react-icons/fa6"
 
 export const frontNavLinks = [
   {
+    title: "الرئيسية",
+    href: "/"
+  },
+  {
     title: "منتجاتنا",
     href: "/products"
   },

@@ -1,3 +1,5 @@
+"use client"
+
 export default function BotPage() {
-  return <h1>Welcome to Botpage!</h1>;
+	return <h1>Welcome to Botpage!</h1>
 }
