@@ -192,11 +192,34 @@
 		@apply bg-background text-foreground;
 		letter-spacing: var(--tracking-normal);
 	}
-	button:not(:disabled),
-	[role="button"]:not(:disabled) {
-		cursor: pointer;
+	h1 {
+		@apply text-3xl lg:text-4xl font-black capitalize text-center lg:text-start;
 	}
-	html {
-		@apply font-sans;
+	h2 {
+		@apply text-2xl lg:text-3xl font-bold capitalize text-center lg:text-start;
+	}
+	h3 {
+		@apply text-xl lg:text-2xl font-semibold capitalize text-center lg:text-start;
+	}
+	h4 {
+		@apply text-lg lg:text-xl font-medium capitalize text-center lg:text-start;
+	}
+	h5 {
+		@apply text-base lg:text-lg font-normal capitalize text-center lg:text-start;
+	}
+	h6 {
+		@apply text-sm lg:text-base font-light text-pretty  text-center lg:text-start;
+	}
+	p {
+		@apply text-xs lg:text-sm font-extralight text-muted-foreground text-center lg:text-start;
+	}
+	section {
+		@apply container mx-auto px-4 py-12;
+	}
+	.PhoneInput {
+		@apply file:text-foreground  placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input h-9 w-full min-w-0 rounded-md border bg-transparent px-0 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm;
+	}
+	.stdropdown-menu {
+		@apply !bg-input !text-foreground;
 	}
 }

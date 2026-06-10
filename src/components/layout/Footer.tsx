@@ -14,7 +14,7 @@ export default function Footer() {
 				{/* -------------------------------- Logo -------------------------------- */}
 				<div className="flex flex-col items-center justify-center gap-2">
 					<Logo />
-					<h6 className=" text-center text-balance">خبراء اللحوم في مصر</h6>
+					<h6 className=" text-center text-balance">خبراء الزراعة في مصر</h6>
 				</div>
 				<div className="flex flex-col items-center justify-center gap-2">
 					{footerData.map(({ icon, title }, index) => (
@@ -35,7 +35,7 @@ export default function Footer() {
 				</nav>
 				<Separator />
 				<Badge>
-					<Copyright /> 2025 Ahmed Elgazzar. All rights reserved.
+					<Copyright /> 2026 Ahmed Elgazzar. All rights reserved.
 				</Badge>
 			</div>
 		</footer>
