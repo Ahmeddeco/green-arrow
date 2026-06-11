@@ -16,7 +16,7 @@ export default function FrontNavigation() {
 					asChild
 					key={link.title}
 					variant={pathName === link.href ? "default" : "ghost"}
-					size={"default"}
+					size={"sm"}
 					className="rounded-full"
 				>
 					<Link href={link.href}>

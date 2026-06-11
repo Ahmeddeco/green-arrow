@@ -1,3 +1,33 @@
+generator zod {
+  provider                         = "zod-prisma-types"
+  output                           = "../src/generated/zod"
+  useMultipleFiles                 = true
+  writeNullishInModelTypes         = true
+  createModelTypes                 = true
+  // default is true
+  writeBarrelFiles                 = false
+  // default is true
+  createInputTypes                 = false
+  // default is true
+  addInputTypeValidation           = false
+  // default is true
+  addIncludeType                   = false
+  // default is true
+  addSelectType                    = false
+  // default is true
+  validateWhereUniqueInput         = false
+  // default is true
+  createOptionalDefaultValuesTypes = false
+  // default is false
+  createRelationValuesTypes        = false
+  // default is false
+  createPartialTypes               = false
+  // default is false
+  useDefaultValidators             = false
+  // default is true
+  coerceDate                       = false
+  // default is true
+}
 
 generator client {
   provider = "prisma-client"
@@ -73,4 +103,67 @@ model Verification {
 
   @@index([identifier])
   @@map("verification")
+}
+
+model Person {
+  id        String   @id @default(uuid())
+  name      String
+  email     String
+  image     String
+  mobile    String
+  city      String?
+  state     String?
+  country   String?
+  role      Role     @default(user)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum Role {
+  admin
+  seller
+  client
+  user
+}
+
+model Product {
+  id                String       @id @default(uuid())
+  title             String
+  activeIngredients String[]
+  description       String?
+  stock             Int
+  price             Int
+  discount          Int?
+  mainImage         String
+  images            String[]
+  category          Category
+  createdAt         DateTime     @default(now())
+  updatedAt         DateTime     @updatedAt
+  manufacture       Manufacture? @relation(fields: [manufactureId], references: [id])
+  manufactureId     String?
+}
+
+model Manufacture {
+  id        String    @id @default(uuid())
+  name      String
+  products  Product[]
+  address   String?
+  tel       String?
+  email     String?
+  website   String?
+  logo      String?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+enum Category {
+  grass
+  insect
+  fungi
+  mites
+  nematodes
+  growth
+  fertilizers
+  seeds
+  tools
 }

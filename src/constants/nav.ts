@@ -1,4 +1,5 @@
-import { Bot, Home, MapPin, Newspaper, Package2, Server, Smartphone, Users } from "lucide-react"
+import { Home, MapPin, Newspaper, Package2, Server, Smartphone, Users } from "lucide-react"
+import { BsRobot } from "react-icons/bs"
 import { FaFacebookF, FaInstagram, FaXTwitter } from "react-icons/fa6"
 
 
@@ -26,7 +27,7 @@ export const frontNavLinks = [
   {
     title: "bot",
     href: "/bot",
-    icon: Bot
+    icon: BsRobot
   },
   {
     title: "server",

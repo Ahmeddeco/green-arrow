@@ -74,13 +74,13 @@
 }
 
 :root {
-	--background: oklch(90.125% 0.03628 124.389);
+	--background: oklch(0.9892 0.0054 117.9205);
 	--foreground: oklch(0.2077 0.0398 265.7549);
 	--card: oklch(1 0 0);
 	--card-foreground: oklch(0.2077 0.0398 265.7549);
 	--popover: oklch(1 0 0);
 	--popover-foreground: oklch(0.2077 0.0398 265.7549);
-	--primary: oklch(64.708% 0.15254 128.443);
+	--primary: oklch(0.8871 0.2122 128.5041);
 	--primary-foreground: oklch(0 0 0);
 	--secondary: oklch(0.3717 0.0392 257.287);
 	--secondary-foreground: oklch(0.9842 0.0034 247.8575);
@@ -91,21 +91,21 @@
 	--destructive: oklch(0.6368 0.2078 25.3313);
 	--border: oklch(0.9288 0.0126 255.5078);
 	--input: oklch(0.9288 0.0126 255.5078);
-	--ring: oklch(64.708% 0.15254 128.443);
-	--chart-1: oklch(64.708% 0.15254 128.443);
+	--ring: oklch(0.8871 0.2122 128.5041);
+	--chart-1: oklch(0.8871 0.2122 128.5041);
 	--chart-2: oklch(0.3717 0.0392 257.287);
-	--chart-3: oklch(76.343% 0.15225 102.621);
+	--chart-3: oklch(0.7227 0.192 149.5793);
 	--chart-4: oklch(0.5544 0.0407 257.4166);
 	--chart-5: oklch(0.7107 0.0351 256.7878);
 	--radius: 1rem;
 	--sidebar: oklch(1 0 0);
 	--sidebar-foreground: oklch(0.2077 0.0398 265.7549);
-	--sidebar-primary: oklch(64.708% 0.15254 128.443);
+	--sidebar-primary: oklch(0.8871 0.2122 128.5041);
 	--sidebar-primary-foreground: oklch(0 0 0);
 	--sidebar-accent: oklch(0.9842 0.0034 247.8575);
 	--sidebar-accent-foreground: oklch(0.2077 0.0398 265.7549);
 	--sidebar-border: oklch(0.9683 0.0069 247.8956);
-	--sidebar-ring: oklch(64.708% 0.15254 128.443);
+	--sidebar-ring: oklch(0.8871 0.2122 128.5041);
 	--destructive-foreground: oklch(1 0 0);
 	--font-sans: Inter, system-ui, sans-serif;
 	--font-serif: Georgia, serif;
@@ -130,13 +130,13 @@
 }
 
 .dark {
-	--background: oklch(23.89% 0.00185 106.77);
+	--background: oklch(0.1288 0.0406 264.6952);
 	--foreground: oklch(0.9842 0.0034 247.8575);
 	--card: oklch(0.2077 0.0398 265.7549);
 	--card-foreground: oklch(0.9842 0.0034 247.8575);
 	--popover: oklch(0.2077 0.0398 265.7549);
 	--popover-foreground: oklch(0.9842 0.0034 247.8575);
-	--primary: oklch(88.714% 0.21216 128.523);
+	--primary: oklch(0.8871 0.2122 128.5041);
 	--primary-foreground: oklch(0 0 0);
 	--secondary: oklch(0.2795 0.0368 260.031);
 	--secondary-foreground: oklch(0.9842 0.0034 247.8575);
@@ -214,7 +214,7 @@
 		@apply text-xs lg:text-sm font-extralight text-muted-foreground text-center lg:text-start;
 	}
 	section {
-		@apply container mx-auto px-4 py-12;
+		@apply px-4 py-12;
 	}
 	.PhoneInput {
 		@apply file:text-foreground  placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input h-9 w-full min-w-0 rounded-md border bg-transparent px-0 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm;

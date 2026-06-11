@@ -10,7 +10,7 @@ import { Item, ItemContent, ItemMedia, ItemTitle } from "../ui/item"
 export default function Footer() {
 	return (
 		<footer className="px-4  min-h-48 h-auto bg-input/30 text-foreground mt-12">
-			<div className="container mx-auto flex flex-col items-center justify-center gap-4 py-24 ">
+			<div className=" flex flex-col items-center justify-center gap-4 py-24 ">
 				{/* -------------------------------- Logo -------------------------------- */}
 				<div className="flex flex-col items-center justify-center gap-2">
 					<Logo />
