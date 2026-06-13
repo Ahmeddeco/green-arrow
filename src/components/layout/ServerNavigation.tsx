@@ -14,7 +14,7 @@ export default function ServerNavigation() {
 		<SidebarMenu>
 			{serverNav.map(({ href, title, icon }) => (
 				<SidebarMenu key={href}>
-					<Button asChild variant={pathName === href ? "default" : "ghost"} size={"lg"} className="justify-start">
+					<Button asChild variant={pathName === href ? "default" : "ghost"} size={"full"} className="justify-start">
 						<Link href={href}>
 							{React.createElement(icon)}
 							{title}

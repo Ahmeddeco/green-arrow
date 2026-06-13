@@ -38,24 +38,6 @@ datasource db {
   provider = "postgresql"
 }
 
-model User {
-  id            String    @id @default(cuid())
-  name          String
-  email         String
-  emailVerified Boolean   @default(false)
-  image         String?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  role          String?
-  banned        Boolean?  @default(false)
-  banReason     String?
-  banExpires    DateTime?
-  sessions      Session[]
-  accounts      Account[]
-
-  @@map("user")
-}
-
 model Session {
   id             String   @id
   expiresAt      DateTime
@@ -105,16 +87,39 @@ model Verification {
   @@map("verification")
 }
 
-model Person {
-  id        String   @id @default(uuid())
-  name      String
-  email     String
-  image     String
-  mobile    String
-  city      String?
-  state     String?
-  country   String?
-  role      Role     @default(user)
+model User {
+  id            String    @id @default(cuid())
+  name          String
+  email         String
+  emailVerified Boolean   @default(false)
+  image         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  role          String?
+  banned        Boolean?  @default(false)
+  banReason     String?
+  banExpires    DateTime?
+  sessions      Session[]
+  accounts      Account[]
+  client        Client?
+
+  @@map("user")
+}
+
+model Client {
+  id                 String  @id @default(uuid())
+  mainMobile         String  @unique
+  secondaryMobile    String? @unique
+  city               String?
+  state              String?
+  country            String?
+  lng                String?
+  lat                String?
+  addressDescription String?
+  role               Role    @default(client)
+  user               User    @relation(fields: [userId], references: [id])
+  userId             String  @unique
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -123,7 +128,6 @@ enum Role {
   admin
   seller
   client
-  user
 }
 
 model Product {
@@ -137,23 +141,25 @@ model Product {
   mainImage         String
   images            String[]
   category          Category
-  createdAt         DateTime     @default(now())
-  updatedAt         DateTime     @updatedAt
   manufacture       Manufacture? @relation(fields: [manufactureId], references: [id])
   manufactureId     String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Manufacture {
-  id        String    @id @default(uuid())
-  name      String
-  products  Product[]
-  address   String?
-  tel       String?
-  email     String?
-  website   String?
-  logo      String?
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  id       String    @id @default(uuid())
+  name     String
+  products Product[]
+  address  String?
+  tel      String?
+  email    String?
+  website  String?
+  logo     String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 enum Category {

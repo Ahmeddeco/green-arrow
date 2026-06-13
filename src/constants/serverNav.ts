@@ -7,8 +7,8 @@ export const serverNav = [
     icon: Server
   },
   {
-    title: "المستخدمين",
-    href: "/server/users",
+    title: "الأشخاص",
+    href: "/server/clients",
     icon: Users
   },
   {
