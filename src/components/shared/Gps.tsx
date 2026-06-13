@@ -17,8 +17,11 @@ type AddressDetails = {
 	state: string
 	city: string
 }
+type GpsProps = {
+	cord?: Coordinates | null // أو Coordinates فقط إذا كان إجبارياً
+}
 
-// 🌐 دالة جلب بيانات العنوان من الإحداثيات (Reverse Geocoding) مدمجة داخلياً
+//  دالة جلب بيانات العنوان من الإحداثيات (Reverse Geocoding) مدمجة داخلياً
 async function fetchAddressFromCoords(lat: number, lng: number): Promise<AddressDetails | null> {
 	try {
 		// نطلب البيانات بصيغة jsonv2 ومع تحديد اللغة العربية ar
@@ -49,8 +52,8 @@ async function fetchAddressFromCoords(lat: number, lng: number): Promise<Address
 	}
 }
 
-export default function Gps() {
-	const [coords, setCoords] = useState<Coordinates | null>(null)
+export default function Gps({ cord }: GpsProps) {
+	const [coords, setCoords] = useState<Coordinates | null>(cord ?? null)
 	const [address, setAddress] = useState<AddressDetails | null>(null)
 	const [isLoading, setIsLoading] = useState(false)
 
@@ -122,6 +125,7 @@ export default function Gps() {
 				<Input name="country" defaultValue={address?.country ?? ""} type="hidden" />
 				<Input name="state" defaultValue={address?.state ?? ""} type="hidden" />
 				<Input name="city" defaultValue={address?.city ?? ""} type="hidden" />
+				{/* --------------------------------- Button --------------------------------- */}
 				<Button onClick={getMyLocation} disabled={isLoading} type="button" size={"lg"}>
 					{isLoading ? <Loader2 /> : <MapPin />}
 					{isLoading ? "جاري تحديد الموقع وقراءة العنوان..." : "تحديد موقعي الآن"}

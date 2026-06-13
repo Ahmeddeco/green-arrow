@@ -1,3 +1,179 @@
-export default function ClientsPage() {
-	return <h1>Welcome to Clients page!</h1>
+import { ImageOff, MoreVertical, PlusCircle } from "lucide-react"
+import ServerPageCard from "@/components/shared/ServerPageCard"
+import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import {
+	Pagination,
+	PaginationContent,
+	PaginationItem,
+	PaginationLink,
+	PaginationNext,
+	PaginationPrevious,
+} from "@/components/ui/pagination"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import { Button } from "@/components/ui/button"
+import Link from "next/link"
+import {
+	Dialog,
+	DialogClose,
+	DialogContent,
+	DialogDescription,
+	DialogHeader,
+	DialogTitle,
+	DialogTrigger,
+} from "@/components/ui/dialog"
+import Form from "next/form"
+import { Input } from "@/components/ui/input"
+import { Badge } from "@/components/ui/badge"
+import Image from "next/image"
+import React from "react"
+import { Role } from "@/generated/prisma/enums"
+import UserFilter from "@/components/shared/UserFilter"
+import { isAllowedRoles } from "@/auth/isAllowedRoles"
+import { deleteClientAction } from "@/actions/user.action"
+import { getAllClientsForClientsServerPageType } from "@/types/clients.type"
+import { getAllClientsForClientsServerPage } from "@/dl/clients.data"
+
+export default async function ClientsServerPage({
+	searchParams,
+}: {
+	searchParams: Promise<{ page: string; size: string; role: Role }>
+}) {
+	await isAllowedRoles(["admin"])
+
+	const { page, size } = await searchParams
+	const pageNumber = +page > 1 ? +page : 1
+	const pageSize = +size || 10
+	const activeRole = (await searchParams).role
+	const clients: getAllClientsForClientsServerPageType = await getAllClientsForClientsServerPage(
+		pageSize,
+		pageNumber,
+		activeRole,
+	)
+
+	return (
+		<ServerPageCard
+			icon={PlusCircle}
+			title={"جميع المستخدمين"}
+			description={"جميع المستخدمين في قاعدة البيانات."}
+			btnTitle={"أضف مستخدم"}
+			href={"/server/clients/add"}
+		>
+			<div className="flex flex-col gap-6">
+				{/* ---------------------------- SORT BY ROLE ---------------------------- */}
+				<UserFilter activeRole={activeRole} />
+
+				<Table>
+					{/* ---------------------------- TableHeader ---------------------------- */}
+					<TableHeader>
+						<TableRow>
+							<TableHead>الصورة</TableHead>
+							<TableHead>الاسم</TableHead>
+							<TableHead>الايميل</TableHead>
+							<TableHead>الهاتف الرئيسي</TableHead>
+							<TableHead>العنوان</TableHead>
+							<TableHead>الدور الوظيفي</TableHead>
+							<TableHead className="text-left">الإعدادات</TableHead>
+						</TableRow>
+					</TableHeader>
+					{/* ----------------------------- TableBody ----------------------------- */}
+					<TableBody>
+						{clients?.data.map(({ city, country, user, id, role, state, mainMobile }) => (
+							<TableRow key={id}>
+								<TableCell>
+									{user?.image ? (
+										<Image src={user?.image} alt={"user"} width={50} height={50} className="rounded-lg object-cover" />
+									) : (
+										React.createElement(ImageOff)
+									)}
+								</TableCell>
+								<TableCell>{user.name}</TableCell>
+								<TableCell className="lowercase">{user.email} </TableCell>
+								<TableCell>{mainMobile} </TableCell>
+								<TableCell>
+									{city} - {state} - {country}
+								</TableCell>
+								<TableCell>
+									<Badge>{role}</Badge>
+								</TableCell>
+
+								{/* -------------------------------- settings -------------------------------- */}
+								<TableCell className="text-left col-span-1">
+									<DropdownMenu>
+										<DropdownMenuTrigger asChild>
+											<Button variant={"outline"} size={"icon"}>
+												<MoreVertical />
+											</Button>
+										</DropdownMenuTrigger>
+										<DropdownMenuContent align="start" className="space-y-2 p-2">
+											{/* ----------------------------- edit ---------------------------- */}
+											<DropdownMenuItem asChild>
+												<Button variant={"outline"} size={"full"} asChild>
+													<Link href={`/server/clients/edit/${id}`}>تعديل</Link>
+												</Button>
+											</DropdownMenuItem>
+											{/* ---------------------------- delete --------------------------- */}
+											<DropdownMenuItem asChild>
+												<Dialog>
+													<DialogTrigger asChild>
+														<Button variant={"destructive"} size={"full"}>
+															حذف
+														</Button>
+													</DialogTrigger>
+													<DialogContent>
+														<DialogHeader>
+															<DialogTitle>هل أنت متأكد من رغبتك في حذف هذا المنتج؟</DialogTitle>
+															<DialogDescription>
+																لا يمكن التراجع عن هذا الإجراء. سيؤدي ذلك إلى حذف هذا المنتج نهائيًا وإزالة بياناته من
+																خوادمنا.
+															</DialogDescription>
+														</DialogHeader>
+														<div className="flex items-center justify-between ">
+															<Button asChild variant={"default"}>
+																<DialogClose>إلغاء الحذف</DialogClose>
+															</Button>
+															<Form action={deleteClientAction}>
+																<Input type="hidden" name="id" value={id} />
+																<Button type="submit" variant={"destructive"}>
+																	الحذف نهائيا
+																</Button>
+															</Form>
+														</div>
+													</DialogContent>
+												</Dialog>
+											</DropdownMenuItem>
+										</DropdownMenuContent>
+									</DropdownMenu>
+								</TableCell>
+							</TableRow>
+						))}
+					</TableBody>
+					{/* ---------------------------- Pagination ---------------------------- */}
+					<TableCaption>
+						<Pagination>
+							<PaginationContent>
+								<PaginationItem>
+									{/* --------------------------- Previous --------------------------- */}
+									{pageNumber > 1 && <PaginationPrevious href={`?size=${pageSize}&page=${pageNumber - 1}`} />}
+								</PaginationItem>
+								{/* ------------------------- PaginationLink ------------------------ */}
+								{Array.from({ length: clients!.totalPages ?? 1 }).map((_, index) => (
+									<PaginationItem key={index}>
+										<PaginationLink href={`?size=${pageSize}&page=${index + 1}`} isActive={pageNumber === index + 1}>
+											{index + 1}
+										</PaginationLink>
+									</PaginationItem>
+								))}
+								<PaginationItem>
+									{/* ----------------------------- Next ----------------------------- */}
+									{pageNumber < clients!.totalPages && (
+										<PaginationNext href={`?size=${pageSize}&page=${pageNumber + 1}`} />
+									)}
+								</PaginationItem>
+							</PaginationContent>
+						</Pagination>
+					</TableCaption>
+				</Table>
+			</div>
+		</ServerPageCard>
+	)
 }
