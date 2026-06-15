@@ -3,22 +3,24 @@
 import { parseWithZod } from "@conform-to/zod"
 import prisma from "@/lib/prisma"
 import { redirect } from "next/navigation"
-import ClientSchema from "@/schemas/ClientSchema"
+import UserSchema from "@/schemas/UserSchema"
 
 /* ------------------------------ addUserAction ----------------------------- */
-export const addClientAction = async (prevState: unknown, formData: FormData) => {
+export const addUserAction = async (prevState: unknown, formData: FormData) => {
   const submission = parseWithZod(formData, {
-    schema: ClientSchema,
+    schema: UserSchema,
   })
   if (submission.status !== 'success') {
     return submission.reply()
   }
   try {
-    await prisma.client.upsert({
-      where: { userId: submission.value.userId },
+    await prisma.user.upsert({
+      where: { email: submission.value.email },
       create: {
-        user: { connect: { id: submission.value.userId } },
         role: submission.value.role,
+        name: submission.value.name,
+        email: submission.value.email,
+        image: submission.value.image,
         mainMobile: submission.value.mainMobile,
         secondaryMobile: submission.value.secondaryMobile,
         country: submission.value.country,
@@ -30,6 +32,8 @@ export const addClientAction = async (prevState: unknown, formData: FormData) =>
       },
       update: {
         role: submission.value.role,
+        name: submission.value.name,
+        image: submission.value.image,
         mainMobile: submission.value.mainMobile,
         secondaryMobile: submission.value.secondaryMobile,
         country: submission.value.country,
@@ -43,23 +47,25 @@ export const addClientAction = async (prevState: unknown, formData: FormData) =>
   } catch (error) {
     console.error(error)
   }
-  redirect("/server/clients")
+  redirect("/server/users")
 }
 
 
-/* ---------------------------- editClientAction ---------------------------- */
-export const editClientAction = async (prevState: unknown, formData: FormData) => {
+/* ---------------------------- editUserAction ---------------------------- */
+export const editUserAction = async (prevState: unknown, formData: FormData) => {
   const submission = parseWithZod(formData, {
-    schema: ClientSchema,
+    schema: UserSchema,
   })
   if (submission.status !== 'success') {
     return submission.reply()
   }
   try {
-    await prisma.client.update({
-      where: { userId: submission.value.userId },
+    await prisma.user.update({
+      where: { email: submission.value.email },
       data: {
         role: submission.value.role,
+        name: submission.value.name,
+        image: submission.value.image,
         mainMobile: submission.value.mainMobile,
         secondaryMobile: submission.value.secondaryMobile,
         country: submission.value.country,
@@ -73,19 +79,19 @@ export const editClientAction = async (prevState: unknown, formData: FormData) =
   } catch (error) {
     console.error(error)
   }
-  redirect("/server/clients")
+  redirect("/server/users")
 }
 
 
-/* --------------------------- deleteClientAction --------------------------- */
-export const deleteClientAction = async (formData: FormData) => {
+/* --------------------------- deleteUserAction --------------------------- */
+export const deleteUserAction = async (formData: FormData) => {
   try {
     const id = formData.get("id")
-    await prisma.client.delete({
+    await prisma.user.delete({
       where: { id: id as string },
     })
   } catch (error) {
     console.error(error)
   }
-  redirect("/server/clients")
+  redirect("/server/users")
 }

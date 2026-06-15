@@ -15,26 +15,13 @@ import { addUserAction } from "@/actions/user.action"
 import { UploadOneImagesDropZone } from "@/components/shared/UploadImagesDropZone"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Role } from "@/generated/prisma/enums"
+import { User } from "@/generated/prisma/client"
 
 type Props = {
-	authUser:
-		| {
-				id: string
-				createdAt: Date
-				updatedAt: Date
-				email: string
-				emailVerified: boolean
-				name: string
-				image?: string | null | undefined
-				banned: boolean | null | undefined
-				role?: string | null | undefined
-				banReason?: string | null | undefined
-				banExpires?: Date | null | undefined
-		  }
-		| undefined
+	user: User
 }
 
-export default function AddUserForm({ authUser }: Props) {
+export default function EditUserForm({ user }: Props) {
 	const [lastResult, action] = useActionState(addUserAction, undefined)
 	const [form, fields] = useForm({
 		lastResult,
@@ -50,21 +37,21 @@ export default function AddUserForm({ authUser }: Props) {
 			{/* --------------------------------- name -------------------------------- */}
 			<Field>
 				<FieldLabel htmlFor={fields.name.name}>الإسم</FieldLabel>
-				<Input type="text" key={fields.name.key} name={fields.name.name} defaultValue={authUser?.name ?? ""} />
+				<Input type="text" key={fields.name.key} name={fields.name.name} defaultValue={user?.name ?? ""} />
 				<FieldError>{fields.name.errors}</FieldError>
 			</Field>
 
 			{/* -------------------------------- email -------------------------------- */}
 			<Field>
 				<FieldLabel htmlFor={fields.email.name}>الإيميل </FieldLabel>
-				<Input type="email" key={fields.email.key} name={fields.email.name} defaultValue={authUser?.email ?? ""} />
+				<Input type="email" key={fields.email.key} name={fields.email.name} defaultValue={user?.email ?? ""} />
 				<FieldError>{fields.email.errors}</FieldError>
 			</Field>
 
 			{/* ---------------------------------- role ---------------------------------- */}
 			<Field>
 				<FieldLabel htmlFor={fields.role.name}>الدور</FieldLabel>
-				<Select key={fields.role.key} name={fields.role.name} defaultValue={Role.user}>
+				<Select key={fields.role.key} name={fields.role.name} defaultValue={user.role ?? ""}>
 					<SelectTrigger>
 						<SelectValue placeholder={Role.user} />
 					</SelectTrigger>
@@ -85,13 +72,13 @@ export default function AddUserForm({ authUser }: Props) {
 				label="الصورة"
 				imageKey={fields.image.key}
 				imageName={fields.image.name}
-				dbImage={authUser?.image ?? ""}
+				dbImage={user?.image ?? ""}
 			/>
 			{/* ---------------------------- mainMobile ---------------------------- */}
 			<Phone
 				key={fields.mainMobile.key}
 				name={fields.mainMobile.name}
-				defaultValue={fields.mainMobile.initialValue ?? ""}
+				defaultValue={user.mainMobile ?? ""}
 				errors={fields.mainMobile.errors}
 				label="الهاتف الرئيسي"
 			/>
@@ -100,13 +87,13 @@ export default function AddUserForm({ authUser }: Props) {
 			<Phone
 				key={fields.secondaryMobile.key}
 				name={fields.secondaryMobile.name ?? ""}
-				defaultValue={fields.secondaryMobile.initialValue ?? ""}
+				defaultValue={user.secondaryMobile ?? ""}
 				errors={fields.secondaryMobile.errors}
 				label="الهاتف الثانوي"
 			/>
 
 			{/* ----------------------------------- Gps ---------------------------------- */}
-			<Gps />
+			<Gps cord={{ lat: user.lat ?? 31, lng: user.lng ?? 31 }} />
 
 			{/* --------------------------- addressDescription --------------------------- */}
 			<Field>
@@ -114,13 +101,13 @@ export default function AddUserForm({ authUser }: Props) {
 				<Textarea
 					key={fields.addressDescription.key}
 					name={fields.addressDescription.name}
-					defaultValue={fields.addressDescription.initialValue}
+					defaultValue={user.addressDescription ?? ""}
 				/>
 				<FieldError>{fields.addressDescription.errors}</FieldError>
 			</Field>
 
 			{/* ------------------------------ SubmitButton ------------------------------ */}
-			<SubmitButton text={"أضف مستخدم"} />
+			<SubmitButton text={"عدل المستخدم"} />
 		</Form>
 	)
 }

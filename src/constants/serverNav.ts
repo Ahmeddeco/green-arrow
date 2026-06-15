@@ -1,4 +1,4 @@
-import { ChartNoAxesCombined, Ham, Package2, Server, Users } from "lucide-react"
+import { ChartNoAxesCombined, Package2, Server, Users } from "lucide-react"
 
 export const serverNav = [
   {
@@ -8,7 +8,7 @@ export const serverNav = [
   },
   {
     title: "الأشخاص",
-    href: "/server/clients",
+    href: "/server/users",
     icon: Users
   },
   {

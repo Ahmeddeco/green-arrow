@@ -1,20 +1,22 @@
 import RoleSchema from "@/generated/zod/inputTypeSchemas/RoleSchema"
 import { z } from 'zod'
 
-export const ClientSchema = z.object({
-  role: RoleSchema,
+export const UserSchema = z.object({
+  role: RoleSchema.nullish(),
   id: z.string().nullish(),
-  mainMobile: z.string(),
+  name: z.string(),
+  email: z.string(),
+  image: z.string().nullish(),
+  mainMobile: z.string().nullish(),
   secondaryMobile: z.string().nullish(),
   city: z.string().nullish(),
   state: z.string().nullish(),
   country: z.string().nullish(),
-  lng: z.string().nullish(),
-  lat: z.string().nullish(),
+  lng: z.number().nullish(),
+  lat: z.number().nullish(),
   addressDescription: z.string().nullish(),
-  userId: z.string(),
 })
 
-export type Client = z.infer<typeof ClientSchema>
+export type User = z.infer<typeof UserSchema>
 
-export default ClientSchema
+export default UserSchema

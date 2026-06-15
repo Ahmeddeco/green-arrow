@@ -1,10 +1,13 @@
-import { Agent } from '@mastra/core/agent'
 import { StagehandBrowser } from '@mastra/stagehand'
+
+import { Agent } from '@mastra/core/agent'
 import { ollama } from 'ollama-ai-provider-v2'
+import { Memory } from "@mastra/memory"
 
 const browser = new StagehandBrowser({
-  headless: true, model: {
-    modelName: "llama3.1",
+  headless: true,
+  model: {
+    modelName: "gemma4:12b",
     baseURL: "http://localhost:11434/v1", // المسار المتوافق مع OpenAI في Ollama
     apiKey: "ollama" // قيمة صورية لأن Ollama لا يتطلب مفتاحاً حقيقياً
   }
@@ -13,13 +16,13 @@ const browser = new StagehandBrowser({
 export const stagehandAgent = new Agent({
   id: 'stagehand-agent',
   name: 'Stagehand Browser',
-  model: ollama("llama3.1"),
+  model: ollama("gemma4:12b"),
   browser,
   instructions: `You are a web automation assistant.
 
 Use stagehand tools to interact with pages:
-- stagehand_navigate to go to URLs
-- stagehand_act to perform actions described in natural language
-- stagehand_extract to get structured data from the page
-- stagehand_observe to find available actions on the page`,
+- stagehand_navigate to go to "https://shouraonline.com/"
+`,
+  memory: new Memory(),
 })
+

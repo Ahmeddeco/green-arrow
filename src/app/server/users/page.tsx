@@ -29,11 +29,11 @@ import React from "react"
 import { Role } from "@/generated/prisma/enums"
 import UserFilter from "@/components/shared/UserFilter"
 import { isAllowedRoles } from "@/auth/isAllowedRoles"
-import { deleteClientAction } from "@/actions/user.action"
-import { getAllClientsForClientsServerPageType } from "@/types/clients.type"
-import { getAllClientsForClientsServerPage } from "@/dl/clients.data"
+import { deleteUserAction } from "@/actions/user.action"
+import { getAllUsersForUsersServerPageType } from "@/types/users.type"
+import { getAllUsersForUsersServerPage } from "@/dl/users.data"
 
-export default async function ClientsServerPage({
+export default async function UsersServerPage({
 	searchParams,
 }: {
 	searchParams: Promise<{ page: string; size: string; role: Role }>
@@ -44,7 +44,7 @@ export default async function ClientsServerPage({
 	const pageNumber = +page > 1 ? +page : 1
 	const pageSize = +size || 10
 	const activeRole = (await searchParams).role
-	const clients: getAllClientsForClientsServerPageType = await getAllClientsForClientsServerPage(
+	const clients: getAllUsersForUsersServerPageType = await getAllUsersForUsersServerPage(
 		pageSize,
 		pageNumber,
 		activeRole,
@@ -77,17 +77,17 @@ export default async function ClientsServerPage({
 					</TableHeader>
 					{/* ----------------------------- TableBody ----------------------------- */}
 					<TableBody>
-						{clients?.data.map(({ city, country, user, id, role, state, mainMobile }) => (
+						{clients?.data.map(({ city, country, name, email, image, id, role, state, mainMobile }) => (
 							<TableRow key={id}>
 								<TableCell>
-									{user?.image ? (
-										<Image src={user?.image} alt={"user"} width={50} height={50} className="rounded-lg object-cover" />
+									{image ? (
+										<Image src={image} alt={"user"} width={50} height={50} className="rounded-lg object-cover" />
 									) : (
 										React.createElement(ImageOff)
 									)}
 								</TableCell>
-								<TableCell>{user.name}</TableCell>
-								<TableCell className="lowercase">{user.email} </TableCell>
+								<TableCell>{name}</TableCell>
+								<TableCell className="lowercase">{email} </TableCell>
 								<TableCell>{mainMobile} </TableCell>
 								<TableCell>
 									{city} - {state} - {country}
@@ -108,7 +108,7 @@ export default async function ClientsServerPage({
 											{/* ----------------------------- edit ---------------------------- */}
 											<DropdownMenuItem asChild>
 												<Button variant={"outline"} size={"full"} asChild>
-													<Link href={`/server/clients/edit/${id}`}>تعديل</Link>
+													<Link href={`/server/users/edit/${id}`}>تعديل</Link>
 												</Button>
 											</DropdownMenuItem>
 											{/* ---------------------------- delete --------------------------- */}
@@ -131,7 +131,7 @@ export default async function ClientsServerPage({
 															<Button asChild variant={"default"}>
 																<DialogClose>إلغاء الحذف</DialogClose>
 															</Button>
-															<Form action={deleteClientAction}>
+															<Form action={deleteUserAction}>
 																<Input type="hidden" name="id" value={id} />
 																<Button type="submit" variant={"destructive"}>
 																	الحذف نهائيا

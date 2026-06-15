@@ -1,17 +1,17 @@
 import { isAllowedRoles } from "@/auth/isAllowedRoles"
 import EmptyCard from "@/components/shared/EmptyCard"
 import ServerPageCard from "@/components/shared/ServerPageCard"
-import { getOneClient } from "@/dl/clients.data"
-import EditClientForm from "@/forms/EditClientForm"
+import { getOneUser } from "@/dl/users.data"
+import EditUserForm from "@/forms/EditUserForm"
 import { CircleChevronLeft, PlusCircle } from "lucide-react"
 
-export default async function EditclientPage({ params }: { params: Promise<{ id: string }> }) {
+export default async function EditUserPage({ params }: { params: Promise<{ id: string }> }) {
 	await isAllowedRoles(["admin"])
 
 	const id = (await params).id
-	const client = await getOneClient(id)
+	const user = await getOneUser(id)
 
-	return !client ? (
+	return !user ? (
 		<EmptyCard href={"/server/clients/add"} linkTitle={"أضف مستخدم جديد"} linkIcon={PlusCircle} />
 	) : (
 		<ServerPageCard
@@ -21,7 +21,7 @@ export default async function EditclientPage({ params }: { params: Promise<{ id:
 			btnTitle={"الرجوع"}
 			href="/server/clients"
 		>
-			<EditClientForm client={client!} />
+			<EditUserForm user={user!} />
 		</ServerPageCard>
 	)
 }

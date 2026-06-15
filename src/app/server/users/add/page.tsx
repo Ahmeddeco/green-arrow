@@ -5,19 +5,19 @@ import AddUserForm from "@/forms/AddUserForm"
 import { CircleChevronLeft } from "lucide-react"
 
 export default async function AddUsersPage() {
-	await isAllowedRoles(["admin","client"])
+	await isAllowedRoles(["admin", "client"])
 	const session = await getSession()
-	const userId = session?.user.id
+	const authUser = session?.user
 
 	return (
 		<ServerPageCard
 			icon={CircleChevronLeft}
-			title={"أضف عميل جديد"}
-			description={"أضف عميل جديد الى قاعدة البيانات."}
+			title={"أضف مستخدم جديد"}
+			description={"أضف مستخدم جديد الى قاعدة البيانات."}
 			btnTitle={"الرجوع"}
-			href="/server/clients"
+			href="/server/users"
 		>
-			<AddUserForm userId={userId} />
+			<AddUserForm authUser={authUser} />
 		</ServerPageCard>
 	)
 }

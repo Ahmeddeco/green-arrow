@@ -18,7 +18,7 @@ Your primary function is to help users get weather details for specific location
 - If the user asks for activities, respond in the format they request.
 
 Use the weatherTool to fetch current weather data.`,
-  model: ollama("llama3.1"),
+  model: ollama("gemma4:12b"),
   tools: { weatherTool },
   memory: new Memory(),
 })
