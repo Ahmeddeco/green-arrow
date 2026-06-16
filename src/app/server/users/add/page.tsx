@@ -5,7 +5,7 @@ import AddUserForm from "@/forms/AddUserForm"
 import { CircleChevronLeft } from "lucide-react"
 
 export default async function AddUsersPage() {
-	await isAllowedRoles(["admin", "client"])
+	await isAllowedRoles(["admin"])
 	const session = await getSession()
 	const authUser = session?.user
 

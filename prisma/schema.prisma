@@ -123,6 +123,21 @@ enum Role {
   provider
 }
 
+model Factory {
+  id        String    @id @default(cuid())
+  name      String
+  products  Product[]
+  address   String?
+  tel       String    @unique
+  email     String?
+  website   String?
+  logo      String?
+  owner     User      @relation(fields: [userId], references: [id])
+  userId    String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
 model Product {
   id                 String      @id @default(cuid())
   title              String
@@ -139,21 +154,6 @@ model Product {
   updatedAt          DateTime    @updatedAt
   factoryId          String
   orderItems         OrderItem[]
-}
-
-model Factory {
-  id        String    @id @default(cuid())
-  name      String
-  products  Product[]
-  address   String?
-  tel       String?
-  email     String?
-  website   String?
-  logo      String?
-  owner     User      @relation(fields: [userId], references: [id])
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  userId    String
 }
 
 enum Category {

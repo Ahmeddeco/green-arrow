@@ -1,4 +1,4 @@
-import { ImageOff, MoreVertical, PlusCircle } from "lucide-react"
+import { ImageOff, Link2, MoreVertical, PlusCircle } from "lucide-react"
 import ServerPageCard from "@/components/shared/ServerPageCard"
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import {
@@ -26,74 +26,68 @@ import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import Image from "next/image"
 import React from "react"
-import { Role } from "@/generated/prisma/enums"
-import UserFilter from "@/components/shared/UserFilter"
 import { isAllowedRoles } from "@/auth/isAllowedRoles"
-import { deleteUserAction } from "@/actions/user.action"
-import { getAllUsersForUsersServerPageType } from "@/types/users.type"
-import { getAllUsersForUsersServerPage } from "@/dl/users.data"
+import { getAllFactoriesType } from "@/types/factories.type"
+import { getAllFactories } from "@/dl/factories.data"
+import { deleteFactoryAction } from "@/actions/factory.action"
 
-export default async function UsersServerPage({
+export default async function FactoriesServerPage({
 	searchParams,
 }: {
-	searchParams: Promise<{ page: string; size: string; role: Role }>
+	searchParams: Promise<{ page: string; size: string }>
 }) {
 	await isAllowedRoles(["admin"])
 
 	const { page, size } = await searchParams
 	const pageNumber = +page > 1 ? +page : 1
 	const pageSize = +size || 10
-	const activeRole = (await searchParams).role
-	const clients: getAllUsersForUsersServerPageType = await getAllUsersForUsersServerPage(
-		pageSize,
-		pageNumber,
-		activeRole,
-	)
+	const Factories: getAllFactoriesType = await getAllFactories(pageSize, pageNumber)
 
 	return (
 		<ServerPageCard
 			icon={PlusCircle}
-			title={"جميع المستخدمين"}
-			description={"جميع المستخدمين في قاعدة البيانات."}
-			btnTitle={"أضف مستخدم"}
-			href={"/server/users/add"}
+			title={"جميع المصانع"}
+			description={"جميع المصانع في قاعدة البيانات."}
+			btnTitle={"أضف مصنع"}
+			href={"/server/factories/add"}
 		>
 			<div className="flex flex-col gap-6">
-				{/* ---------------------------- SORT BY ROLE ---------------------------- */}
-				<UserFilter activeRole={activeRole} />
-
 				<Table>
 					{/* ---------------------------- TableHeader ---------------------------- */}
 					<TableHeader>
 						<TableRow>
-							<TableHead>الصورة</TableHead>
-							<TableHead>الاسم</TableHead>
-							<TableHead>الايميل</TableHead>
-							<TableHead>الهاتف الرئيسي</TableHead>
-							<TableHead>العنوان</TableHead>
-							<TableHead>الدور الوظيفي</TableHead>
+							<TableHead>اللوجو</TableHead>
+							<TableHead>اسم المصنع</TableHead>
+							<TableHead>الإيميل</TableHead>
+							<TableHead>الهاتف</TableHead>
+							<TableHead>الموقع الإلكتروني</TableHead>
+							<TableHead>المالك</TableHead>
 							<TableHead className="text-left">الإعدادات</TableHead>
 						</TableRow>
 					</TableHeader>
 					{/* ----------------------------- TableBody ----------------------------- */}
 					<TableBody>
-						{clients?.data.map(({ city, country, name, email, image, id, role, state, mainMobile }) => (
+						{Factories?.data.map(({ email, logo, name, owner, tel, website, id }) => (
 							<TableRow key={id}>
 								<TableCell>
-									{image ? (
-										<Image src={image} alt={"user"} width={50} height={50} className="rounded-lg object-cover" />
+									{logo ? (
+										<Image src={logo} alt={"user"} width={50} height={50} className="rounded-lg object-cover" />
 									) : (
 										React.createElement(ImageOff)
 									)}
 								</TableCell>
 								<TableCell>{name}</TableCell>
 								<TableCell className="lowercase">{email} </TableCell>
-								<TableCell>{mainMobile} </TableCell>
+								<TableCell>{tel} </TableCell>
 								<TableCell>
-									{city} - {state} - {country}
+									<Button asChild variant={"link"}>
+										<Link href={website ?? "#"} target="_blank">
+											<Link2 />
+										</Link>
+									</Button>
 								</TableCell>
 								<TableCell>
-									<Badge>{role}</Badge>
+									<Badge>{owner.name}</Badge>
 								</TableCell>
 
 								{/* -------------------------------- settings -------------------------------- */}
@@ -108,7 +102,7 @@ export default async function UsersServerPage({
 											{/* ----------------------------- edit ---------------------------- */}
 											<DropdownMenuItem asChild>
 												<Button variant={"outline"} size={"full"} asChild>
-													<Link href={`/server/users/edit/${id}`}>تعديل</Link>
+													<Link href={`/server/factories/edit/${id}`}>تعديل</Link>
 												</Button>
 											</DropdownMenuItem>
 											{/* ---------------------------- delete --------------------------- */}
@@ -121,7 +115,7 @@ export default async function UsersServerPage({
 													</DialogTrigger>
 													<DialogContent>
 														<DialogHeader>
-															<DialogTitle>هل أنت متأكد من رغبتك في حذف هذا المنتج؟</DialogTitle>
+															<DialogTitle>هل أنت متأكد من رغبتك في حذف هذا المصنع ؟</DialogTitle>
 															<DialogDescription>
 																لا يمكن التراجع عن هذا الإجراء. سيؤدي ذلك إلى حذف هذا المنتج نهائيًا وإزالة بياناته من
 																خوادمنا.
@@ -131,7 +125,7 @@ export default async function UsersServerPage({
 															<Button asChild variant={"default"}>
 																<DialogClose>إلغاء الحذف</DialogClose>
 															</Button>
-															<Form action={deleteUserAction}>
+															<Form action={deleteFactoryAction}>
 																<Input type="hidden" name="id" value={id} />
 																<Button type="submit" variant={"destructive"}>
 																	الحذف نهائيا
@@ -156,7 +150,7 @@ export default async function UsersServerPage({
 									{pageNumber > 1 && <PaginationPrevious href={`?size=${pageSize}&page=${pageNumber - 1}`} />}
 								</PaginationItem>
 								{/* ------------------------- PaginationLink ------------------------ */}
-								{Array.from({ length: clients!.totalPages ?? 1 }).map((_, index) => (
+								{Array.from({ length: Factories!.totalPages ?? 1 }).map((_, index) => (
 									<PaginationItem key={index}>
 										<PaginationLink href={`?size=${pageSize}&page=${index + 1}`} isActive={pageNumber === index + 1}>
 											{index + 1}
@@ -165,7 +159,7 @@ export default async function UsersServerPage({
 								))}
 								<PaginationItem>
 									{/* ----------------------------- Next ----------------------------- */}
-									{pageNumber < clients!.totalPages && (
+									{pageNumber < Factories!.totalPages && (
 										<PaginationNext href={`?size=${pageSize}&page=${pageNumber + 1}`} />
 									)}
 								</PaginationItem>

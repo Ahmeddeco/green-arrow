@@ -1,4 +1,4 @@
-import { ChartNoAxesCombined, Package2, Server, Users } from "lucide-react"
+import { ChartNoAxesCombined, Factory, Package2, Server, Users } from "lucide-react"
 
 export const serverNav = [
   {
@@ -10,6 +10,11 @@ export const serverNav = [
     title: "الأشخاص",
     href: "/server/users",
     icon: Users
+  },
+  {
+    title: "المصانع",
+    href: "/server/factories",
+    icon: Factory
   },
   {
     title: "المنتجات",

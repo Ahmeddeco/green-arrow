@@ -39,3 +39,12 @@ export const getOneUser = async (id: string) => {
     console.error(error)
   }
 }
+
+/* ------------------------ getAllUsersForFactoryPage ----------------------- */
+export const getAllUsersForFactoryPage = async () => {
+  try {
+    return await prisma.user.findMany({ select: { id: true, image: true, name: true }, orderBy: { name: "asc" } })
+  } catch (error) {
+    console.error(error)
+  }
+}
