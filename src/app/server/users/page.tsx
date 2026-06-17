@@ -81,7 +81,13 @@ export default async function UsersServerPage({
 							<TableRow key={id}>
 								<TableCell>
 									{image ? (
-										<Image src={image} alt={"user"} width={50} height={50} className="rounded-lg object-cover" />
+										<Image
+											src={image}
+											alt={"user"}
+											width={50}
+											height={50}
+											className="rounded-sm object-cover aspect-square"
+										/>
 									) : (
 										React.createElement(ImageOff)
 									)}

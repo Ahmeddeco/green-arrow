@@ -71,7 +71,13 @@ export default async function FactoriesServerPage({
 							<TableRow key={id}>
 								<TableCell>
 									{logo ? (
-										<Image src={logo} alt={"user"} width={50} height={50} className="rounded-lg object-cover" />
+										<Image
+											src={logo}
+											alt={"user"}
+											width={50}
+											height={50}
+											className="rounded-sm object-cover aspect-square"
+										/>
 									) : (
 										React.createElement(ImageOff)
 									)}
