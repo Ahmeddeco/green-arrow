@@ -1,4 +1,5 @@
 import { ChartNoAxesCombined, Factory, Package2, Server, Users } from "lucide-react"
+import { GiMaterialsScience } from "react-icons/gi"
 
 export const serverNav = [
   {
@@ -15,6 +16,11 @@ export const serverNav = [
     title: "المصانع",
     href: "/server/factories",
     icon: Factory
+  },
+  {
+    title: "المكونات",
+    href: "/server/components",
+    icon: GiMaterialsScience
   },
   {
     title: "المنتجات",

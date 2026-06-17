@@ -76,13 +76,14 @@ export default async function FactoriesServerPage({
 										React.createElement(ImageOff)
 									)}
 								</TableCell>
-								<TableCell>{name}</TableCell>
+								<TableCell className="capitalize">{name}</TableCell>
 								<TableCell className="lowercase">{email} </TableCell>
 								<TableCell>{tel} </TableCell>
 								<TableCell>
-									<Button asChild variant={"link"}>
+									<Button asChild variant={"link"} size={"sm"}>
 										<Link href={website ?? "#"} target="_blank">
 											<Link2 />
+											إذهب الى الموقع
 										</Link>
 									</Button>
 								</TableCell>

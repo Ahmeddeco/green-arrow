@@ -66,7 +66,7 @@ export default function AddFactoryForm({ allUsers }: Props) {
 			{/* -------------------------------- address -------------------------------- */}
 			<Field>
 				<FieldLabel htmlFor={fields.address.name}>العنوان </FieldLabel>
-				<Textarea key={fields.address.key} name={fields.address.name} defaultValue={fields.email.initialValue} />
+				<Textarea key={fields.address.key} name={fields.address.name} defaultValue={fields.address.initialValue} />
 				<FieldError>{fields.address.errors}</FieldError>
 			</Field>
 

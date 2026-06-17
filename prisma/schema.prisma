@@ -4,29 +4,17 @@ generator zod {
   useMultipleFiles                 = true
   writeNullishInModelTypes         = true
   createModelTypes                 = true
-  // default is true
   writeBarrelFiles                 = false
-  // default is true
   createInputTypes                 = false
-  // default is true
   addInputTypeValidation           = false
-  // default is true
   addIncludeType                   = false
-  // default is true
   addSelectType                    = false
-  // default is true
   validateWhereUniqueInput         = false
-  // default is true
   createOptionalDefaultValuesTypes = false
-  // default is false
   createRelationValuesTypes        = false
-  // default is false
   createPartialTypes               = false
-  // default is false
   useDefaultValidators             = false
-  // default is true
   coerceDate                       = false
-  // default is true
 }
 
 generator client {
@@ -38,27 +26,28 @@ datasource db {
   provider = "postgresql"
 }
 
+// جلسات تسجيل الدخول الخاصة بالمستخدمين (تدار غالباً عبر مكتبة الـ Auth)
 model Session {
-  id             String   @id
+  id             String   @id @default(cuid())
   expiresAt      DateTime
-  token          String
+  token          String   @unique
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
   ipAddress      String?
   userAgent      String?
   userId         String
   user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  impersonatedBy String?
+  impersonatedBy String? // في حال قيام مسؤول الدعم بتقمص حساب المستخدم لحل مشكلة
 
-  @@unique([token])
   @@index([userId])
   @@map("session")
 }
 
+// حسابات الربط الخارجي للمستخدمين (مثل تسجيل الدخول بجوجل أو كلمة المرور)
 model Account {
-  id                    String    @id
-  accountId             String
-  providerId            String
+  id                    String    @id @default(cuid())
+  accountId             String // المعرف القادم من المزود الخارجي (مثل Google ID)
+  providerId            String // اسم المزود (مثل "google" أو "credentials")
   userId                String
   user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   accessToken           String?
@@ -67,7 +56,7 @@ model Account {
   accessTokenExpiresAt  DateTime?
   refreshTokenExpiresAt DateTime?
   scope                 String?
-  password              String?
+  password              String? // التشفير الخاص بكلمة المرور في حال التسجيل التقليدي
   createdAt             DateTime  @default(now())
   updatedAt             DateTime  @updatedAt
 
@@ -75,10 +64,11 @@ model Account {
   @@map("account")
 }
 
+// رموز التحقق لتأكيد البريد الإلكتروني أو استعادة كلمة المرور
 model Verification {
-  id         String   @id
-  identifier String
-  value      String
+  id         String   @id @default(cuid())
+  identifier String // الهدف من التحقق (مثل البريد الإلكتروني للمستخدم)
+  value      String // الرمز العشوائي المرسل (Token)
   expiresAt  DateTime
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
@@ -87,12 +77,13 @@ model Verification {
   @@map("verification")
 }
 
+// الجدول الرئيسي للمستخدمين والصلاحيات وبيانات الشحن والتواصل
 model User {
   id                 String    @id @default(cuid())
   name               String
   email              String    @unique
   emailVerified      Boolean   @default(false)
-  image              String?
+  image              String? // رابط الصورة الشخصية للمستخدم
   createdAt          DateTime  @default(now())
   updatedAt          DateTime  @updatedAt
   role               Role?     @default(user)
@@ -101,31 +92,33 @@ model User {
   banExpires         DateTime?
   sessions           Session[]
   accounts           Account[]
-  mainMobile         String?   @unique
-  secondaryMobile    String?   @unique
-  city               String?
-  state              String?
+  mainMobile         String?   @unique // رقم الهاتف الأساسي وعادة يستعمل للتواصل أو الدفع
+  secondaryMobile    String?   @unique // رقم هاتف احتياطي لضمان الوصول للعميل عند الشحن
+  city               String? // المدينة (لتحديد مناديب الشحن المناسبين)
+  state              String? // المحافظة أو الولاية
   country            String?
-  lng                Float?
-  lat                Float?
-  addressDescription String?
-  factory            Factory[]
+  lng                Float? // الإحداثيات الجغرافية (خط الطول) لتحديد دقيق للمزرعة أو المحل
+  lat                Float? // الإحداثيات الجغرافية (دائرة العرض)
+  addressDescription String? // وصف العنوان تفصيلياً (علامات مميزة) لتسهيل الشحن
+  factory            Factory[] // المصانع أو الشركات المملوكة للمستخدم إذا كان Seller/Provider
   orders             Order[]
 
   @@map("user")
 }
 
+// الأدوار والصلاحيات داخل السيستم لحماية الـ Routes والـ Actions
 enum Role {
-  user
-  admin
-  seller
-  client
-  provider
+  user // مستخدم عام تصفح فقط
+  admin // مدير السيستم بالكامل
+  seller // تاجر أو موزع محلي
+  client // عميل تجاري (مزارع، صاحب محل أسمدة)
+  provider // شركة أو مصنع مبيدات مصنع للمنتجات
 }
 
+// الشركات أو المصانع المصنعة أو المستوردة للمبيدات والمنتجات الزراعية
 model Factory {
   id        String    @id @default(cuid())
-  name      String
+  name      String // اسم الشركة أو المصنع (مثلا: سينجنتا، باير، كفر الزيات)
   products  Product[]
   address   String?
   tel       String    @unique
@@ -133,67 +126,104 @@ model Factory {
   website   String?
   logo      String?
   owner     User      @relation(fields: [userId], references: [id])
-  userId    String
+  userId    String // المستخدم المسؤول عن إدارة بيانات هذا المصنع بالسيستم
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
+
+  @@index([userId])
 }
 
+// المواد الفعالة التي تدخل في تركيب المبيدات والمركبات الزراعية
+model Component {
+  id        String             @id @default(cuid())
+  title     String             @unique // اسم المادة الفعالة (مثل: Abamectin, Imidacloprid)
+  products  ProductComponent[]
+  createdAt DateTime           @default(now())
+  updatedAt DateTime           @updatedAt
+}
+
+// المنتجات والمبيدات المعروضة للبيع في المتجر
 model Product {
-  id                 String      @id @default(cuid())
-  title              String
-  activeIngredients  String[]
-  description        String?
-  stock              Int         @default(0)
-  price              Int         @default(0)
-  discountPercentage Int         @default(0)
-  mainImage          String
-  images             String[]
-  category           Category
-  factory            Factory     @relation(fields: [factoryId], references: [id])
-  createdAt          DateTime    @default(now())
-  updatedAt          DateTime    @updatedAt
+  id                 String             @id @default(cuid())
+  title              String // الاسم التجاري للمنتج (مثل: تاك، شالنجر)
+  activeComponents   ProductComponent[]
+  description        String? // شرح للمنتج، الآفات المستهدفة، ومعدلات الاستخدام
+  productUrl         String? // رابط خارجي للمنتج أو لصحيفة البيانات الفنية (Data Sheet)
+  stock              Float              @default(0) // كمية المخزون (Float لدعم بيع اللترات أو الكيلوات السائبة)
+  price              Float              @default(0) // السعر الحالي للمنتج بالمتجر
+  discountPercentage Float              @default(0) // نسبة الخصم إن وجدت (مثال: 15% تخفض من السعر تلقائياً)
+  mainImage          String // الصورة الرئيسية للمنتج في الكارت والمعاينات
+  images             String[] // ألبوم الصور الإضافية (تفاصيل العبوة، ظهر العبوة للتعليمات)
+  category           Category // القسم التجاري والفني للمنتج
+  factory            Factory            @relation(fields: [factoryId], references: [id])
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
   factoryId          String
   orderItems         OrderItem[]
+
+  @@index([factoryId])
 }
 
+// الجدول الوسيط لربط المواد الفعالة بالمنتجات مع تحديد تركيز كل مادة
+model ProductComponent {
+  productId     String
+  componentId   String
+  concentration String? // نسبة تركيز المادة بالمنتج (مثل: "1.8% EC" أو "25% WP" أو "722 جم/لتر")
+
+  product   Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
+  component Component @relation(fields: [componentId], references: [id], onDelete: Cascade)
+
+  @@id([productId, componentId])
+  @@index([componentId])
+}
+
+// تصنيفات المنتجات الزراعية والمبيدات حسب نوع الآفة أو الطبيعة التجارية
 enum Category {
-  grass
-  insect
-  fungi
-  mites
-  nematodes
-  growth
-  fertilizers
-  seeds
-  tools
+  herbicides // مبيدات حشائش
+  insecticides // مبيدات حشرية
+  fungicides // مبيدات فطرية
+  acaricides // مبيدات أكاروسية (العنكبوت الأحمر والقراديات)
+  nematicides // مبيدات نيماتودا
+  growth_regulators // منظمات نمو زراعية ومحفزات
+  fertilizers // أسمدة ومغذيات (عناصر كبرى وصغرى، أحماض أمينية)
+  seeds // تقاوي وبذور محاصيل وخضروات
+  tools // معدات وآلات زراعية (رشاشات، مقصات، إلخ)
 }
 
+// طلبات الشراء والعمليات المالية داخل المتجر
 model Order {
   id          String      @id @default(cuid())
   userId      String
   user        User        @relation(fields: [userId], references: [id])
   items       OrderItem[]
-  totalAmount Float
-  status      OrderStatus @default(PENDING)
-  address     String // العنوان الذي سيتم الشحن إليه في هذا الطلب تحديدًا
+  totalAmount Float // القيمة الإجمالية للطلب بعد حساب الخصومات والشحن
+  status      OrderStatus @default(pending)
+  address     String // العنوان الدقيق الفعلي الذي اختاره العميل لشحن هذا الطلب تحديداً
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
+
+  @@index([userId])
 }
 
+// العناصر المشتراة داخل كل طلب بشكل مفصل
 model OrderItem {
   id        String  @id @default(cuid())
   orderId   String
-  order     Order   @relation(fields: [orderId], references: [id])
+  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
   productId String
   product   Product @relation(fields: [productId], references: [id])
-  quantity  Int
-  price     Float // تسجيل سعر المنتج وقت الشراء (لأن السعر في جدول Product قد يتغير لاحقًا)
+  quantity  Int // الكمية المطلوبة من المنتج
+  price     Float // تثبيت سعر المنتج وقت الشراء لحماية الفاتورة من تغير الأسعار اللاحق بالمتجر
+
+  @@index([orderId])
+  @@index([productId])
 }
 
+// المراحل الزمنية وحالة الطلب بدءاً من إنشائه وحتى وصوله للمشتري
 enum OrderStatus {
-  PENDING
-  PROCESSING
-  SHIPPED
-  DELIVERED
-  CANCELLED
+  pending // بانتظار المراجعة أو تأكيد الدفع
+  processing // جاري تجهيز وتعبئة المنتجات في المخزن
+  shipped // تم تسليم الشحنة لشركة الشحن أو المندوب وهي في الطريق
+  delivered // تم تسليم الشحنة للعميل بنجاح واستلام المبلغ
+  cancelled // طلب ملغي (من العميل أو لعدم توفر مخزون)
 }

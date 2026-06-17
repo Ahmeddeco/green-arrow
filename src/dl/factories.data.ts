@@ -40,3 +40,12 @@ export const getAllFactories = async (size: number, page: number) => {
 
   }
 }
+
+/* ---------------------- getAllFactoriesForProductPage --------------------- */
+export const getAllFactoriesForProductPage = async () => {
+  try {
+    return await prisma.factory.findMany({ select: { id: true, name: true, logo: true } })
+  } catch (error) {
+    console.error(error)
+  }
+}
