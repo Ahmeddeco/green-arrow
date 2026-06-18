@@ -1,4 +1,3 @@
-import { Home } from "lucide-react"
 import { FaBacterium, FaWorm } from "react-icons/fa6"
 import { GiFertilizerBag, GiHangingSpider, GiHighGrass, GiPlantSeed, GiTreeGrowth } from "react-icons/gi"
 import { BsBugFill } from "react-icons/bs"

@@ -41,7 +41,7 @@ export const addComponentAction = async (prevState: unknown, formData: FormData)
   redirect("/server/components")
 }
 
-/* ------------------------------ editProductAction ----------------------------- */
+/* ------------------------------ editComponentAction ----------------------------- */
 export const editComponentAction = async (prevState: unknown, formData: FormData) => {
   const submission = parseWithZod(formData, {
     schema: ComponentSchema,

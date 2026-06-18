@@ -44,11 +44,7 @@ export default async function UsersServerPage({
 	const pageNumber = +page > 1 ? +page : 1
 	const pageSize = +size || 10
 	const activeRole = (await searchParams).role
-	const clients: getAllUsersForUsersServerPageType = await getAllUsersForUsersServerPage(
-		pageSize,
-		pageNumber,
-		activeRole,
-	)
+	const users: getAllUsersForUsersServerPageType = await getAllUsersForUsersServerPage(pageSize, pageNumber, activeRole)
 
 	return (
 		<ServerPageCard
@@ -77,7 +73,7 @@ export default async function UsersServerPage({
 					</TableHeader>
 					{/* ----------------------------- TableBody ----------------------------- */}
 					<TableBody>
-						{clients?.data.map(({ city, country, name, email, image, id, role, state, mainMobile }) => (
+						{users?.data.map(({ city, country, name, email, image, id, role, state, mainMobile }) => (
 							<TableRow key={id}>
 								<TableCell>
 									{image ? (
@@ -99,14 +95,14 @@ export default async function UsersServerPage({
 									{city} - {state} - {country}
 								</TableCell>
 								<TableCell>
-									<Badge>{role}</Badge>
+									<Badge variant={"outline"}>{role}</Badge>
 								</TableCell>
 
 								{/* -------------------------------- settings -------------------------------- */}
 								<TableCell className="text-left col-span-1">
 									<DropdownMenu>
 										<DropdownMenuTrigger asChild>
-											<Button variant={"outline"} size={"icon"}>
+											<Button variant={"ghost"} size={"icon"}>
 												<MoreVertical />
 											</Button>
 										</DropdownMenuTrigger>
@@ -162,7 +158,7 @@ export default async function UsersServerPage({
 									{pageNumber > 1 && <PaginationPrevious href={`?size=${pageSize}&page=${pageNumber - 1}`} />}
 								</PaginationItem>
 								{/* ------------------------- PaginationLink ------------------------ */}
-								{Array.from({ length: clients!.totalPages ?? 1 }).map((_, index) => (
+								{Array.from({ length: users!.totalPages ?? 1 }).map((_, index) => (
 									<PaginationItem key={index}>
 										<PaginationLink href={`?size=${pageSize}&page=${index + 1}`} isActive={pageNumber === index + 1}>
 											{index + 1}
@@ -171,7 +167,7 @@ export default async function UsersServerPage({
 								))}
 								<PaginationItem>
 									{/* ----------------------------- Next ----------------------------- */}
-									{pageNumber < clients!.totalPages && (
+									{pageNumber < users!.totalPages && (
 										<PaginationNext href={`?size=${pageSize}&page=${pageNumber + 1}`} />
 									)}
 								</PaginationItem>

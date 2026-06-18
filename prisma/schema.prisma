@@ -140,6 +140,8 @@ model Component {
   products  ProductComponent[]
   createdAt DateTime           @default(now())
   updatedAt DateTime           @updatedAt
+
+  @@index([title])
 }
 
 // المنتجات والمبيدات المعروضة للبيع في المتجر

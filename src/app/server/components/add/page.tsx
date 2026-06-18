@@ -1,6 +1,6 @@
 import { isAllowedRoles } from "@/auth/isAllowedRoles"
 import ServerPageCard from "@/components/shared/ServerPageCard"
-import AddComponentForm from "@/forms/AddComponentForm "
+import AddComponentForm from "@/forms/AddComponentForm"
 import { CircleChevronLeft } from "lucide-react"
 
 export default async function AddComponentsPage() {

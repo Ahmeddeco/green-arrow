@@ -23,7 +23,6 @@ import {
 } from "@/components/ui/dialog"
 import Form from "next/form"
 import { Input } from "@/components/ui/input"
-import { Badge } from "@/components/ui/badge"
 import Image from "next/image"
 import React from "react"
 import { isAllowedRoles } from "@/auth/isAllowedRoles"
@@ -58,10 +57,10 @@ export default async function FactoriesServerPage({
 						<TableRow>
 							<TableHead>اللوجو</TableHead>
 							<TableHead>اسم المصنع</TableHead>
-							<TableHead>الإيميل</TableHead>
-							<TableHead>الهاتف</TableHead>
-							<TableHead>الموقع الإلكتروني</TableHead>
 							<TableHead>المالك</TableHead>
+							<TableHead>الهاتف</TableHead>
+							<TableHead>الإيميل</TableHead>
+							<TableHead>الموقع الإلكتروني</TableHead>
 							<TableHead className="text-left">الإعدادات</TableHead>
 						</TableRow>
 					</TableHeader>
@@ -83,8 +82,9 @@ export default async function FactoriesServerPage({
 									)}
 								</TableCell>
 								<TableCell className="capitalize">{name}</TableCell>
-								<TableCell className="lowercase">{email} </TableCell>
+								<TableCell>{owner.name}</TableCell>
 								<TableCell>{tel} </TableCell>
+								<TableCell className="lowercase">{email} </TableCell>
 								<TableCell>
 									<Button asChild variant={"link"} size={"sm"}>
 										<Link href={website ?? "#"} target="_blank">
@@ -93,15 +93,12 @@ export default async function FactoriesServerPage({
 										</Link>
 									</Button>
 								</TableCell>
-								<TableCell>
-									<Badge>{owner.name}</Badge>
-								</TableCell>
 
 								{/* -------------------------------- settings -------------------------------- */}
 								<TableCell className="text-left col-span-1">
 									<DropdownMenu>
 										<DropdownMenuTrigger asChild>
-											<Button variant={"outline"} size={"icon"}>
+											<Button variant={"ghost"} size={"icon"}>
 												<MoreVertical />
 											</Button>
 										</DropdownMenuTrigger>

@@ -18,7 +18,7 @@ export const serverNav = [
     icon: Factory
   },
   {
-    title: "المكونات",
+    title: "المواد الفعالة",
     href: "/server/components",
     icon: GiMaterialsScience
   },
