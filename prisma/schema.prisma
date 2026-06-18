@@ -137,6 +137,7 @@ model Factory {
 model Component {
   id        String             @id @default(cuid())
   title     String             @unique // اسم المادة الفعالة (مثل: Abamectin, Imidacloprid)
+  unit      Unit               @default(percentage)
   products  ProductComponent[]
   createdAt DateTime           @default(now())
   updatedAt DateTime           @updatedAt
@@ -157,6 +158,9 @@ model Product {
   mainImage          String // الصورة الرئيسية للمنتج في الكارت والمعاينات
   images             String[] // ألبوم الصور الإضافية (تفاصيل العبوة، ظهر العبوة للتعليمات)
   category           Category // القسم التجاري والفني للمنتج
+  recommendations    String
+  features           String
+  phi                String
   factory            Factory            @relation(fields: [factoryId], references: [id])
   createdAt          DateTime           @default(now())
   updatedAt          DateTime           @updatedAt
@@ -170,13 +174,20 @@ model Product {
 model ProductComponent {
   productId     String
   componentId   String
-  concentration String? // نسبة تركيز المادة بالمنتج (مثل: "1.8% EC" أو "25% WP" أو "722 جم/لتر")
-
-  product   Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
-  component Component @relation(fields: [componentId], references: [id], onDelete: Cascade)
+  concentration Int?
+  product       Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
+  component     Component @relation(fields: [componentId], references: [id], onDelete: Cascade)
 
   @@id([productId, componentId])
   @@index([componentId])
+}
+
+enum Unit {
+  g_liter    @map("جم/لتر")
+  percentage @map("%")
+  g_kg       @map("جرام/كيلوجرام")
+  ppm        @map("جزء في المليون")
+  ppb        @map("جزء في المليار")
 }
 
 // تصنيفات المنتجات الزراعية والمبيدات حسب نوع الآفة أو الطبيعة التجارية

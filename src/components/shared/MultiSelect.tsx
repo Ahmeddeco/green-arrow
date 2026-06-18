@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Command, CommandEmpty, CommandGroup, CommandItem } from "@/components/ui/command"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { useState } from "react"
-import { Field, FieldLabel } from "../ui/field"
+import { Field, FieldError, FieldLabel } from "../ui/field"
 import { Card, CardContent, CardHeader } from "../ui/card"
 import { Input } from "../ui/input"
 
@@ -16,6 +16,8 @@ type Props = {
 				title: string
 		  }[]
 		| undefined
+	errors: string[] | undefined
+	key: string | undefined
 	defaultValues?:
 		| {
 				id: string
@@ -26,9 +28,11 @@ type Props = {
 	label: string
 }
 
-export default function MultiSelect({ allSelectedData, inputName, label, defaultValues }: Props) {
+export default function MultiSelect({ allSelectedData, inputName, label, defaultValues, errors, key }: Props) {
 	const [selected, setSelected] = useState<{ id: string; title: string }[]>(defaultValues || [])
 	const selectedIds = selected?.map((item) => item.id) ?? []
+
+	console.log("selectedIds from MultiSelect", selectedIds)
 
 	const toggle = (id: string) => {
 		setSelected((prev) => {
@@ -42,18 +46,13 @@ export default function MultiSelect({ allSelectedData, inputName, label, default
 
 	return (
 		<Field>
-			<Input type="hidden" name={inputName} value={JSON.stringify(selectedIds)} />
+			<Input type="hidden" name={inputName} defaultValue={JSON.stringify(selectedIds)} key={key} />
 			<FieldLabel>{label}</FieldLabel>
 			<Card className="w-full ">
 				{/* -------------------------------- Badge ------------------------------- */}
 				<CardHeader className="flex flex-wrap gap-6">
 					{selected.map(({ id, title }) => (
-						<Button
-							key={id}
-							onClick={() => setSelected(selected.filter((item) => item.id !== id))}
-							className="cursor-pointer"
-							size={"sm"}
-						>
+						<Button key={id} onClick={() => setSelected(selected.filter((item) => item.id !== id))} size={"sm"}>
 							{title}
 						</Button>
 					))}
@@ -69,7 +68,7 @@ export default function MultiSelect({ allSelectedData, inputName, label, default
 							</Button>
 						</PopoverTrigger>
 
-						<PopoverContent className="w-[200px] p-0 " align="start">
+						<PopoverContent className="w-fit max-w-xl p-0 " align="start">
 							<Command>
 								<CommandEmpty>No result found.</CommandEmpty>
 								<CommandGroup>
@@ -85,6 +84,7 @@ export default function MultiSelect({ allSelectedData, inputName, label, default
 					</Popover>
 				</CardContent>
 			</Card>
+			<FieldError>{errors}</FieldError>
 		</Field>
 	)
 }

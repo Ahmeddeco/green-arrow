@@ -9,6 +9,8 @@ import SubmitButton from "@/components/shared/SubmitButton"
 import { Input } from "@/components/ui/input"
 import ComponentSchema from "@/schemas/ComponentSchema"
 import { addComponentAction } from "@/actions/component.action"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Unit } from "@/generated/prisma/enums"
 
 export default function AddComponentForm() {
 	const [lastResult, action] = useActionState(addComponentAction, undefined)
@@ -28,6 +30,24 @@ export default function AddComponentForm() {
 				<FieldLabel htmlFor={fields.title.name}>الإسم</FieldLabel>
 				<Input type="text" key={fields.title.key} name={fields.title.name} defaultValue={fields.title.initialValue} />
 				<FieldError>{fields.title.errors}</FieldError>
+			</Field>
+
+			{/* ---------------------------------- Unit ---------------------------------- */}
+			<Field>
+				<FieldLabel htmlFor={fields.unit.name}>category</FieldLabel>
+				<Select key={fields.unit.key} name={fields.unit.name} defaultValue={fields.unit.initialValue}>
+					<SelectTrigger>
+						<SelectValue />
+					</SelectTrigger>
+					<SelectContent>
+						{Object.values(Unit).map((unit, index) => (
+							<SelectItem value={unit} key={index}>
+								{unit}
+							</SelectItem>
+						))}
+					</SelectContent>
+				</Select>
+				<FieldError>{fields.unit.errors}</FieldError>
 			</Field>
 
 			{/* ------------------------------ SubmitButton ------------------------------ */}

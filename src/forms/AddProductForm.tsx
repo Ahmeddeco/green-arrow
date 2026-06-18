@@ -6,7 +6,6 @@ import Form from "next/form"
 import { useActionState } from "react"
 import { Field, FieldError, FieldLabel } from "@/components/ui/field"
 import SubmitButton from "@/components/shared/SubmitButton"
-import { Textarea } from "@/components/ui/textarea"
 import { Input } from "@/components/ui/input"
 import { UploadManyImagesDropZone, UploadOneImagesDropZone } from "@/components/shared/UploadImagesDropZone"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -14,6 +13,8 @@ import Image from "next/image"
 import { addProductAction } from "@/actions/product.action"
 import MultiSelect from "@/components/shared/MultiSelect"
 import ProductSchema from "@/schemas/ProductSchema"
+import { getAllComponentsType } from "@/types/components.type"
+import TiptapEditor from "@/components/shared/TiptapEditor"
 
 type Props = {
 	allFactories:
@@ -23,8 +24,9 @@ type Props = {
 				logo: string | null
 		  }[]
 		| undefined
+	allComponents: getAllComponentsType
 }
-export default function AddProductForm({ allFactories }: Props) {
+export default function AddProductForm({ allFactories, allComponents }: Props) {
 	const [lastResult, action] = useActionState(addProductAction, undefined)
 	const [form, fields] = useForm({
 		lastResult,
@@ -47,18 +49,79 @@ export default function AddProductForm({ allFactories }: Props) {
 			{/* ------------------------------- description ------------------------------ */}
 			<Field>
 				<FieldLabel htmlFor={fields.description.name}>وصف المنتج</FieldLabel>
-				<Textarea
-					key={fields.description.key}
+				<TiptapEditor
+					editorKey={fields.description.key}
 					name={fields.description.name}
 					defaultValue={fields.description.initialValue}
 				/>
 				<FieldError>{fields.description.errors}</FieldError>
 			</Field>
 
-			{/* ---------------------------- activeComponents --------------------------- */}
-			{/* TODO: يجب تعديل حقول الادخال لتحتوي على اختيار للمادة الفعالة, وحقل اخر للتركيز, وحقل اخر للوحدة */}
+			{/* ----------------------------- recommendations ---------------------------- */}
+			<Field>
+				<FieldLabel htmlFor={fields.recommendations.name}>التوصيات</FieldLabel>
+				<TiptapEditor
+					key={fields.recommendations.key}
+					name={fields.recommendations.name}
+					defaultValue={fields.recommendations.initialValue}
+				/>
+				<FieldError>{fields.recommendations.errors}</FieldError>
+			</Field>
 
-			<MultiSelect allSelectedData={undefined} inputName={""} label={"المادة الفعالة"} />
+			{/* -------------------------------- features -------------------------------- */}
+			<Field>
+				<FieldLabel htmlFor={fields.features.name}>خصائص و مميزات المنتج</FieldLabel>
+				<TiptapEditor key={fields.features.key} name={fields.features.name} defaultValue={fields.features.initialValue} />
+				<FieldError>{fields.features.errors}</FieldError>
+			</Field>
+
+			{/* ----------------------------------- phi ---------------------------------- */}
+			<Field>
+				<FieldLabel htmlFor={fields.phi.name}>فترة ما قبل الحصاد</FieldLabel>
+				<Input type="number" key={fields.phi.key} name={fields.phi.name} defaultValue={fields.phi.initialValue} />
+				<FieldError>{fields.phi.errors}</FieldError>
+			</Field>
+			{/* ---------------------------------- المصنع ---------------------------------- */}
+			<Field>
+				<FieldLabel htmlFor={fields.factoryId.name}>المصنع</FieldLabel>
+				<Select key={fields.factoryId.key} name={fields.factoryId.name} defaultValue={fields.factoryId.initialValue}>
+					<SelectTrigger>
+						<SelectValue />
+					</SelectTrigger>
+					<SelectContent>
+						{allFactories?.map(({ id, logo, name }) => (
+							<SelectItem value={id} key={id} className="flex items-center py-2 gap-2 ">
+								{logo && (
+									<Image src={logo} alt={"owner"} width={24} height={24} className="object-cover aspect-square" />
+								)}
+								<h6>{name}</h6>
+							</SelectItem>
+						))}
+					</SelectContent>
+				</Select>
+				<FieldError>{fields.factoryId.errors}</FieldError>
+			</Field>
+
+			{/* ---------------------------- activeComponents --------------------------- */}
+			<MultiSelect
+				allSelectedData={allComponents}
+				inputName={""}
+				label={"المادة الفعالة"}
+				errors={fields.activeComponents.errors}
+				key={fields.activeComponents.key}
+			/>
+
+			{/* --------------------------------- website -------------------------------- */}
+			<Field>
+				<FieldLabel htmlFor={fields.productUrl.name}>صفحة المنتج </FieldLabel>
+				<Input
+					type="url"
+					key={fields.productUrl.key}
+					name={fields.productUrl.name}
+					defaultValue={fields.productUrl.initialValue}
+				/>
+				<FieldError>{fields.productUrl.errors}</FieldError>
+			</Field>
 
 			{/* ----------------- price &  stock & discountPercentage ----------------- */}
 			<div className="flex items-center gap-4">
@@ -87,7 +150,7 @@ export default function AddProductForm({ allFactories }: Props) {
 				</Field>
 				{/* stock */}
 				<Field>
-					<FieldLabel htmlFor={fields.stock.name}>الإسم</FieldLabel>
+					<FieldLabel htmlFor={fields.stock.name}>الكمية</FieldLabel>
 					<Input
 						type="number"
 						key={fields.stock.key}
@@ -97,37 +160,6 @@ export default function AddProductForm({ allFactories }: Props) {
 					<FieldError>{fields.stock.errors}</FieldError>
 				</Field>
 			</div>
-
-			{/* --------------------------------- website -------------------------------- */}
-			<Field>
-				<FieldLabel htmlFor={fields.productUrl.name}>صفحة المنتج </FieldLabel>
-				<Input
-					type="url"
-					key={fields.productUrl.key}
-					name={fields.productUrl.name}
-					defaultValue={fields.productUrl.initialValue}
-				/>
-				<FieldError>{fields.productUrl.errors}</FieldError>
-			</Field>
-
-			{/* ---------------------------------- المصنع ---------------------------------- */}
-			<Field>
-				<FieldLabel htmlFor={fields.factoryId.name}>المصنع</FieldLabel>
-				<Select key={fields.factoryId.key} name={fields.factoryId.name} defaultValue={fields.factoryId.initialValue}>
-					<SelectTrigger>
-						<SelectValue />
-					</SelectTrigger>
-					<SelectContent>
-						{allFactories?.map(({ id, logo, name }) => (
-							<SelectItem value={id} key={id} className="flex items-center py-2 gap-2 ">
-								{logo && <Image src={logo} alt={"owner"} width={24} height={24} />}
-								<h6>{name}</h6>
-							</SelectItem>
-						))}
-					</SelectContent>
-				</Select>
-				<FieldError>{fields.factoryId.errors}</FieldError>
-			</Field>
 
 			{/* ---------------------------------- mainImage --------------------------------- */}
 			<UploadOneImagesDropZone
@@ -146,7 +178,7 @@ export default function AddProductForm({ allFactories }: Props) {
 			/>
 
 			{/* ------------------------------ SubmitButton ------------------------------ */}
-			<SubmitButton text={"أضف مصنع"} />
+			<SubmitButton text={"أضف منتج"} />
 		</Form>
 	)
 }

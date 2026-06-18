@@ -14,22 +14,24 @@ export const addProductAction = async (prevState: unknown, formData: FormData) =
   if (submission.status !== 'success') {
     return submission.reply()
   }
-  try {
-    await prisma.product.upsert({
-      where: { id: submission.value.id! },
-      create: {
-        title: submission.value.title,
+  console.log('formData from addProductAction', formData)
 
-        factory: { connect: { id: submission.value.factoryId } },
-      },
-      update: {
+  // try {
+  //   await prisma.product.upsert({
+  //     where: { id: submission.value.id! },
+  //     create: {
+  //       title: submission.value.title,
 
-      }
-    })
-  } catch (error) {
-    console.error(error)
-  }
-  redirect("/server/products")
+  //       factory: { connect: { id: submission.value.factoryId } },
+  //     },
+  //     update: {
+
+  //     }
+  //   })
+  // } catch (error) {
+  //   console.error(error)
+  // }
+  // redirect("/server/products")
 }
 
 
