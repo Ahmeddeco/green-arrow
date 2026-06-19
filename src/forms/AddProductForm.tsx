@@ -3,7 +3,7 @@
 import { useForm } from "@conform-to/react"
 import { parseWithZod } from "@conform-to/zod"
 import Form from "next/form"
-import { useActionState } from "react"
+import { useActionState, useState } from "react"
 import { Field, FieldError, FieldLabel } from "@/components/ui/field"
 import SubmitButton from "@/components/shared/SubmitButton"
 import { Input } from "@/components/ui/input"
@@ -11,10 +11,14 @@ import { UploadManyImagesDropZone, UploadOneImagesDropZone } from "@/components/
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import Image from "next/image"
 import { addProductAction } from "@/actions/product.action"
-import MultiSelect from "@/components/shared/MultiSelect"
 import ProductSchema from "@/schemas/ProductSchema"
 import { getAllComponentsType } from "@/types/components.type"
 import TiptapEditor from "@/components/shared/TiptapEditor"
+import CategorySchema from "@/generated/zod/inputTypeSchemas/CategorySchema"
+import MultiComponentSelect from "@/components/shared/MultiComponentSelect"
+import { Unit } from "@/generated/prisma/enums"
+import { Badge } from "@/components/ui/badge"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
 type Props = {
 	allFactories:
@@ -26,6 +30,7 @@ type Props = {
 		| undefined
 	allComponents: getAllComponentsType
 }
+
 export default function AddProductForm({ allFactories, allComponents }: Props) {
 	const [lastResult, action] = useActionState(addProductAction, undefined)
 	const [form, fields] = useForm({
@@ -36,6 +41,11 @@ export default function AddProductForm({ allFactories, allComponents }: Props) {
 		shouldValidate: "onBlur",
 		shouldRevalidate: "onInput",
 	})
+	// تتبع الـ components المختارة لإنشاء مدخلات التركيز والوحدة لها
+	const [selectedComponents, setSelectedComponents] = useState<{ id: string; title: string }[]>([])
+
+	// استخراج الـ field list الخاص بالمواد الفعالة لـ Conform
+	const componentList = fields.activeComponents.getFieldList()
 
 	return (
 		<Form id={form.id} action={action} onSubmit={form.onSubmit} className="space-y-6 ">
@@ -71,7 +81,11 @@ export default function AddProductForm({ allFactories, allComponents }: Props) {
 			{/* -------------------------------- features -------------------------------- */}
 			<Field>
 				<FieldLabel htmlFor={fields.features.name}>خصائص و مميزات المنتج</FieldLabel>
-				<TiptapEditor key={fields.features.key} name={fields.features.name} defaultValue={fields.features.initialValue} />
+				<TiptapEditor
+					key={fields.features.key}
+					name={fields.features.name}
+					defaultValue={fields.features.initialValue}
+				/>
 				<FieldError>{fields.features.errors}</FieldError>
 			</Field>
 
@@ -81,7 +95,26 @@ export default function AddProductForm({ allFactories, allComponents }: Props) {
 				<Input type="number" key={fields.phi.key} name={fields.phi.name} defaultValue={fields.phi.initialValue} />
 				<FieldError>{fields.phi.errors}</FieldError>
 			</Field>
-			{/* ---------------------------------- المصنع ---------------------------------- */}
+
+			{/* -------------------------------- category -------------------------------- */}
+			<Field>
+				<FieldLabel htmlFor={fields.category.name}>نوع المبيد</FieldLabel>
+				<Select key={fields.category.key} name={fields.category.name} defaultValue={fields.category.initialValue}>
+					<SelectTrigger>
+						<SelectValue />
+					</SelectTrigger>
+					<SelectContent>
+						{Object.values(CategorySchema.Enum).map((category, index) => (
+							<SelectItem value={category} key={index}>
+								{category}
+							</SelectItem>
+						))}
+					</SelectContent>
+				</Select>
+				<FieldError>{fields.category.errors}</FieldError>
+			</Field>
+
+			{/* ---------------------------------- factory ---------------------------------- */}
 			<Field>
 				<FieldLabel htmlFor={fields.factoryId.name}>المصنع</FieldLabel>
 				<Select key={fields.factoryId.key} name={fields.factoryId.name} defaultValue={fields.factoryId.initialValue}>
@@ -103,13 +136,50 @@ export default function AddProductForm({ allFactories, allComponents }: Props) {
 			</Field>
 
 			{/* ---------------------------- activeComponents --------------------------- */}
-			<MultiSelect
+			<MultiComponentSelect
 				allSelectedData={allComponents}
-				inputName={""}
 				label={"المادة الفعالة"}
 				errors={fields.activeComponents.errors}
-				key={fields.activeComponents.key}
+				onSelectionChange={(selected) => setSelectedComponents(selected)}
 			/>
+			{/* تحديد تركيز ووحدات المواد الفعالة المختارة */}
+			{selectedComponents.length > 0 && (
+				<Card className="p-4 border border-border rounded-lg bg-muted/10 space-y-4">
+					<CardHeader>
+						<CardTitle>تحديد تركيز ووحدات المواد الفعالة المختارة</CardTitle>
+					</CardHeader>
+					<CardContent className="flex flex-col gap-6">
+						{selectedComponents.map((comp, index) => (
+							<div key={comp.id} className="flex items-end justify-center gap-6  ">
+								<Badge>{comp.title}</Badge>
+
+								<Input type="hidden" name={`${fields.activeComponents.name}[${index}].componentId`} value={comp.id} />
+								{/*  التركيز */}
+								<Field>
+									<FieldLabel>التركيز</FieldLabel>
+									<Input type="number" name={`${fields.activeComponents.name}[${index}].concentration`} />
+								</Field>
+								{/*  الوحدة */}
+								<Field>
+									<FieldLabel>وحدة القياس</FieldLabel>
+									<Select name={`${fields.activeComponents.name}[${index}].unit`}>
+										<SelectTrigger>
+											<SelectValue />
+										</SelectTrigger>
+										<SelectContent>
+											{Object.values(Unit).map((unit, index) => (
+												<SelectItem value={unit} key={index}>
+													{unit}
+												</SelectItem>
+											))}
+										</SelectContent>
+									</Select>
+								</Field>
+							</div>
+						))}
+					</CardContent>
+				</Card>
+			)}
 
 			{/* --------------------------------- website -------------------------------- */}
 			<Field>
@@ -141,7 +211,6 @@ export default function AddProductForm({ allFactories, allComponents }: Props) {
 					<FieldLabel htmlFor={fields.discountPercentage.name}>نسبة الخصم</FieldLabel>
 					<Input
 						type="number"
-						placeholder={"% 9"}
 						key={fields.discountPercentage.key}
 						name={fields.discountPercentage.name}
 						defaultValue={fields.discountPercentage.initialValue}

@@ -1,68 +1,76 @@
 "use client"
 
-import { Check, ChevronDown } from "lucide-react"
+import { Check, ChevronDown, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Command, CommandEmpty, CommandGroup, CommandItem } from "@/components/ui/command"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { useState } from "react"
 import { Field, FieldError, FieldLabel } from "../ui/field"
 import { Card, CardContent, CardHeader } from "../ui/card"
-import { Input } from "../ui/input"
 
 type Props = {
-	allSelectedData:
-		| {
-				id: string
-				title: string
-		  }[]
-		| undefined
+	allSelectedData: { id: string; title: string }[] | undefined
 	errors: string[] | undefined
-	inputKey: string | undefined // 👈 قمنا بتغيير الاسم هنا من key إلى inputKey
-	defaultValues?:
-		| {
-				id: string
-				title: string
-		  }[]
-		| undefined
-	inputName: string
+	defaultValues?: { id: string; title: string }[] | undefined
 	label: string
+	onSelectionChange?: (selected: { id: string; title: string }[]) => void // 👈 أضفنا هذا الـ Callback
 }
 
-export default function MultiSelect({ allSelectedData, inputName, label, defaultValues, errors, inputKey }: Props) {
+export default function MultiComponentSelect({
+	allSelectedData,
+	label,
+	defaultValues,
+	errors,
+	onSelectionChange,
+}: Props) {
 	const [selected, setSelected] = useState<{ id: string; title: string }[]>(defaultValues || [])
-	const selectedIds = selected?.map((item) => item.id) ?? []
 
 	const toggle = (id: string) => {
-		setSelected((prev) => {
-			if (prev.some((item) => item.id === id)) {
-				return prev.filter((item) => item.id !== id)
-			}
+		// 1. حساب المصفوفة الجديدة أولاً خارج الـ State
+		let updated: { id: string; title: string }[] = []
+
+		if (selected.some((item) => item.id === id)) {
+			updated = selected.filter((item) => item.id !== id)
+		} else {
 			const found = allSelectedData?.find((item) => item.id === id)
-			return found ? [...prev, found] : prev
-		})
+			updated = found ? [...selected, found] : selected
+		}
+
+		// 2. تحديث الـ State المحلي للمكون
+		setSelected(updated)
+
+		// 3. إرسال البيانات المحدثة بأمان إلى الفورم الأب (خارج عملية الـ Render)
+		if (onSelectionChange) {
+			onSelectionChange(updated)
+		}
+	}
+
+	const remove = (id: string) => {
+		const updated = selected.filter((item) => item.id !== id)
+		setSelected(updated)
+
+		if (onSelectionChange) {
+			onSelectionChange(updated)
+		}
 	}
 
 	return (
 		<Field>
-			{/* 👈 نمرر هنا الـ inputKey للـ hidden input */}
-			<Input type="hidden" name={inputName} defaultValue={JSON.stringify(selectedIds)} key={inputKey} />
 			<FieldLabel>{label}</FieldLabel>
 			<Card className="w-full ">
-				{/* -------------------------------- Badge ------------------------------- */}
 				<CardHeader className="flex flex-wrap gap-6">
 					{selected.map(({ id, title }) => (
-						<Button key={id} onClick={() => setSelected(selected.filter((item) => item.id !== id))} size={"sm"}>
-							{title}
+						<Button key={id} onClick={() => remove(id)} size={"sm"} type="button">
+							{title} <X />
 						</Button>
 					))}
 				</CardHeader>
 
-				{/* ------------------------------- select ------------------------------- */}
-				<CardContent className="flex flex-col gap-3 w-full">
+				<CardContent className="flex flex-col gap-6 w-full">
 					<Popover>
 						<PopoverTrigger asChild>
-							<Button variant="outline" role="combobox" size={"lg"} type="button" className="justify-start w-fit">
-								select {inputName}
+							<Button variant="outline" role="combobox" size={"lg"} type="button">
+								اختر المواد الفعالة
 								<ChevronDown opacity={0.5} />
 							</Button>
 						</PopoverTrigger>

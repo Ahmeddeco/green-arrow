@@ -1,7 +1,8 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react" // 👈 أضفنا useEffect هنا
 import { toast } from "sonner"
 import { Input } from "../ui/input"
 import { twMerge } from "tailwind-merge"
@@ -31,6 +32,11 @@ export function UploadManyImagesDropZone({ dbImages, label = "images", imagesNam
 	const dbSplittedImages = dbImages ? splittedImages(dbImages?.toString()) : []
 
 	const [images, setImages] = useState<string[]>(dbSplittedImages)
+	const [isMounted, setIsMounted] = useState(false) // 👈 تتبع حالة الـ hydration
+
+	useEffect(() => {
+		setIsMounted(true)
+	}, [])
 
 	const handleDeleteManyImages = (index: number) => {
 		setImages(images.filter((_, i) => i !== index))
@@ -66,18 +72,21 @@ export function UploadManyImagesDropZone({ dbImages, label = "images", imagesNam
 							))}
 						</div>
 					) : (
-						<UploadDropzone
-							config={{ cn: twMerge }}
-							className="ut-button:bg-primary ut-button:cursor-pointer ut-button:text-primary-foreground ut-button:px-8 ut-button:py-4 ut-ready:p-12 ut-readying:p-12 ut-uploading:p-12 ut-label:text-foreground ut-upload-icon:size-12 ut-upload-icon:text-foreground "
-							endpoint={"manyImagesUploader"}
-							onClientUploadComplete={(res: any) => {
-								setImages(res.map((r: any) => r.ufsUrl))
-								toast.success("Images uploaded successfully")
-							}}
-							onUploadError={(e: any) => {
-								toast.error(`Something went wrong: ${e}`)
-							}}
-						/>
+						// 👈 لا تقم برندرة الـ Dropzone إلا بعد التأكد من أننا على المتصفح
+						isMounted && (
+							<UploadDropzone
+								config={{ cn: twMerge }}
+								className="ut-button:bg-primary ut-button:cursor-pointer ut-button:text-primary-foreground ut-button:px-8 ut-button:py-4 ut-ready:p-12 ut-readying:p-12 ut-uploading:p-12 ut-label:text-foreground ut-upload-icon:size-12 ut-upload-icon:text-foreground "
+								endpoint={"manyImagesUploader"}
+								onClientUploadComplete={(res: any) => {
+									setImages(res.map((r: any) => r.ufsUrl))
+									toast.success("Images uploaded successfully")
+								}}
+								onUploadError={(e: any) => {
+									toast.error(`Something went wrong: ${e}`)
+								}}
+							/>
+						)
 					)}
 				</CardContent>
 			</Card>
@@ -89,6 +98,12 @@ export function UploadManyImagesDropZone({ dbImages, label = "images", imagesNam
 /* ------------------------- UploadOneImagesDropZone ------------------------ */
 export function UploadOneImagesDropZone({ dbImage, label = "image", imageName = "image", imageKey, errors }: Props) {
 	const [image, setImage] = useState<string>(dbImage || "")
+	const [isMounted, setIsMounted] = useState(false) // 👈 تتبع حالة الـ hydration
+
+	useEffect(() => {
+		setIsMounted(true)
+	}, [])
+
 	const handleDeleteOneImages = () => {
 		setImage("")
 	}
@@ -121,18 +136,21 @@ export function UploadOneImagesDropZone({ dbImage, label = "image", imageName = 
 							</div>
 						</div>
 					) : (
-						<UploadDropzone
-							config={{ cn: twMerge }}
-							className="ut-button:bg-primary ut-button:text-primary-foreground ut-button:cursor-pointer ut-button:px-8 ut-button:py-4 ut-ready:p-12 ut-readying:p-12 ut-uploading:p-12 ut-label:text-foreground ut-upload-icon:size-12 ut-upload-icon:text-foreground "
-							endpoint={"oneImageUploader"}
-							onClientUploadComplete={(res: any) => {
-								setImage(res[0].ufsUrl)
-								toast.success("Image uploaded successfully")
-							}}
-							onUploadError={(e: any) => {
-								toast.error(`Something went wrong: ${e}`)
-							}}
-						/>
+						// 👈 لا تقم برندرة الـ Dropzone إلا بعد التأكد من أننا على المتصفح
+						isMounted && (
+							<UploadDropzone
+								config={{ cn: twMerge }}
+								className="ut-button:bg-primary ut-button:text-primary-foreground ut-button:cursor-pointer ut-button:px-8 ut-button:py-4 ut-ready:p-12 ut-readying:p-12 ut-uploading:p-12 ut-label:text-foreground ut-upload-icon:size-12 ut-upload-icon:text-foreground "
+								endpoint={"oneImageUploader"}
+								onClientUploadComplete={(res: any) => {
+									setImage(res[0].ufsUrl)
+									toast.success("Image uploaded successfully")
+								}}
+								onUploadError={(e: any) => {
+									toast.error(`Something went wrong: ${e}`)
+								}}
+							/>
+						)
 					)}
 				</CardContent>
 			</Card>

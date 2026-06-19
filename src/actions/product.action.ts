@@ -3,7 +3,6 @@
 import { parseWithZod } from "@conform-to/zod"
 import prisma from "@/lib/prisma"
 import { redirect } from "next/navigation"
-import FactorySchema from "@/schemas/FactorySchema"
 import ProductSchema from "@/schemas/ProductSchema"
 
 /* ------------------------------ addProductAction ----------------------------- */
@@ -11,34 +10,63 @@ export const addProductAction = async (prevState: unknown, formData: FormData) =
   const submission = parseWithZod(formData, {
     schema: ProductSchema,
   })
+
   if (submission.status !== 'success') {
     return submission.reply()
   }
-  console.log('formData from addProductAction', formData)
 
-  // try {
-  //   await prisma.product.upsert({
-  //     where: { id: submission.value.id! },
-  //     create: {
-  //       title: submission.value.title,
+  const data = submission.value
 
-  //       factory: { connect: { id: submission.value.factoryId } },
-  //     },
-  //     update: {
+  try {
+    await prisma.product.create({
+      data: {
+        title: data.title,
+        description: data.description,
+        recommendations: data.recommendations,
+        features: data.features,
+        phi: data.phi,
+        category: data.category,
+        productUrl: data.productUrl,
+        price: Number(data.price),
+        stock: Number(data.stock),
+        discountPercentage: Number(data.discountPercentage),
+        mainImage: data.mainImage,
+        images: data.images,
 
-  //     }
-  //   })
-  // } catch (error) {
-  //   console.error(error)
-  // }
-  // redirect("/server/products")
+        // ربط المصنع
+        factory: {
+          connect: { id: data.factoryId }
+        },
+
+        // إنشاء السجلات في الجدول الوسيط للمواد الفعالة
+        activeComponents: {
+          create: data.activeComponents.map((comp) => ({
+            concentration: comp.concentration ? Number(comp.concentration) : null,
+            unit: comp.unit,
+            // نربط السجل بالمادة الفعالة الموجودة مسبقاً في قاعدة البيانات عبر معرفها
+            component: {
+              connect: {
+                id: comp.componentId,
+              },
+            },
+          })),
+        },
+      },
+    })
+  } catch (error) {
+    console.error("Failed to create product: ", error)
+    return submission.reply({
+      formErrors: ["حدث خطأ أثناء حفظ المنتج ومكوناته الفعالة في قاعدة البيانات."],
+    })
+  }
+
+  redirect("/server/products")
 }
-
 
 /* ---------------------------- editProductAction --------------------------- */
 export const editProductAction = async (prevState: unknown, formData: FormData) => {
   const submission = parseWithZod(formData, {
-    schema: FactorySchema,
+    schema: ProductSchema,
   })
   if (submission.status !== 'success') {
     return submission.reply()

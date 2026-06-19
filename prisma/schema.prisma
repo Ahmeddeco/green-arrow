@@ -154,13 +154,13 @@ model Product {
   productUrl         String? // رابط خارجي للمنتج أو لصحيفة البيانات الفنية (Data Sheet)
   stock              Float              @default(0) // كمية المخزون (Float لدعم بيع اللترات أو الكيلوات السائبة)
   price              Float              @default(0) // السعر الحالي للمنتج بالمتجر
-  discountPercentage Float              @default(0) // نسبة الخصم إن وجدت (مثال: 15% تخفض من السعر تلقائياً)
+  discountPercentage Float?             @default(0) // نسبة الخصم إن وجدت (مثال: 15% تخفض من السعر تلقائياً)
   mainImage          String // الصورة الرئيسية للمنتج في الكارت والمعاينات
   images             String[] // ألبوم الصور الإضافية (تفاصيل العبوة، ظهر العبوة للتعليمات)
   category           Category // القسم التجاري والفني للمنتج
-  recommendations    String
-  features           String
-  phi                String
+  recommendations    String?
+  features           String?
+  phi                Int // فترة ما قبل الحصاد
   factory            Factory            @relation(fields: [factoryId], references: [id])
   createdAt          DateTime           @default(now())
   updatedAt          DateTime           @updatedAt
@@ -175,6 +175,7 @@ model ProductComponent {
   productId     String
   componentId   String
   concentration Int?
+  unit          Unit      @default(percentage)
   product       Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
   component     Component @relation(fields: [componentId], references: [id], onDelete: Cascade)
 
