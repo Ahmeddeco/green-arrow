@@ -53,33 +53,34 @@ export default function EditProductForm({ allFactories, allComponents, oneProduc
 			</Field>
 
 			{/* ------------------------------- description ------------------------------ */}
-			<Field>
-				<FieldLabel htmlFor={fields.description.name}>وصف المنتج</FieldLabel>
-				<TiptapEditor
-					editorKey={fields.description.key}
-					name={fields.description.name}
-					defaultValue={oneProduct?.description ?? ""}
-				/>
-				<FieldError>{fields.description.errors}</FieldError>
-			</Field>
+			<TiptapEditor
+				editorKey={fields.description.key}
+				name={fields.description.name}
+				defaultValue={oneProduct?.description ?? ""}
+				label={"وصف المنتج"}
+				errors={fields.description.errors}
+				id={fields.description.id}
+			/>
 
 			{/* ----------------------------- recommendations ---------------------------- */}
-			<Field>
-				<FieldLabel htmlFor={fields.recommendations.name}>التوصيات</FieldLabel>
-				<TiptapEditor
-					key={fields.recommendations.key}
-					name={fields.recommendations.name}
-					defaultValue={oneProduct?.recommendations ?? ""}
-				/>
-				<FieldError>{fields.recommendations.errors}</FieldError>
-			</Field>
+			<TiptapEditor
+				key={fields.recommendations.key}
+				name={fields.recommendations.name}
+				defaultValue={oneProduct?.recommendations ?? ""}
+				label={"التوصيات"}
+				errors={fields.recommendations.errors}
+				id={fields.recommendations.id}
+			/>
 
 			{/* -------------------------------- features -------------------------------- */}
-			<Field>
-				<FieldLabel htmlFor={fields.features.name}>خصائص و مميزات المنتج</FieldLabel>
-				<TiptapEditor key={fields.features.key} name={fields.features.name} defaultValue={oneProduct?.features ?? ""} />
-				<FieldError>{fields.features.errors}</FieldError>
-			</Field>
+			<TiptapEditor
+				key={fields.features.key}
+				name={fields.features.name}
+				defaultValue={oneProduct?.features ?? ""}
+				label="خصائص و مميزات المنتج"
+				errors={fields.features.errors}
+				id={fields.features.id}
+			/>
 
 			<div className="flex items-center gap-4">
 				{/* ----------------------------------- phi ---------------------------------- */}

@@ -53,37 +53,34 @@ export default function AddProductForm({ allFactories, allComponents }: Props) {
 			</Field>
 
 			{/* ------------------------------- description ------------------------------ */}
-			<Field>
-				<FieldLabel htmlFor={fields.description.name}>وصف المنتج</FieldLabel>
-				<TiptapEditor
-					editorKey={fields.description.key}
-					name={fields.description.name}
-					defaultValue={fields.description.initialValue}
-				/>
-				<FieldError>{fields.description.errors}</FieldError>
-			</Field>
+			<TiptapEditor
+				editorKey={fields.description.key}
+				name={fields.description.name}
+				defaultValue={fields.description.initialValue}
+				label={"وصف المنتج"}
+				errors={fields.description.errors}
+				id={fields.description.id}
+			/>
 
 			{/* ----------------------------- recommendations ---------------------------- */}
-			<Field>
-				<FieldLabel htmlFor={fields.recommendations.name}>التوصيات</FieldLabel>
-				<TiptapEditor
-					key={fields.recommendations.key}
-					name={fields.recommendations.name}
-					defaultValue={fields.recommendations.initialValue}
-				/>
-				<FieldError>{fields.recommendations.errors}</FieldError>
-			</Field>
+			<TiptapEditor
+				key={fields.recommendations.key}
+				name={fields.recommendations.name}
+				defaultValue={fields.recommendations.initialValue}
+				label={"التوصيات"}
+				errors={fields.recommendations.errors}
+				id={fields.recommendations.id}
+			/>
 
 			{/* -------------------------------- features -------------------------------- */}
-			<Field>
-				<FieldLabel htmlFor={fields.features.name}>خصائص و مميزات المنتج</FieldLabel>
-				<TiptapEditor
-					key={fields.features.key}
-					name={fields.features.name}
-					defaultValue={fields.features.initialValue}
-				/>
-				<FieldError>{fields.features.errors}</FieldError>
-			</Field>
+			<TiptapEditor
+				key={fields.features.key}
+				name={fields.features.name}
+				defaultValue={fields.features.initialValue}
+				label="خصائص و مميزات المنتج"
+				errors={fields.features.errors}
+				id={fields.features.id}
+			/>
 
 			<div className="flex items-center gap-4">
 				{/* ----------------------------------- phi ---------------------------------- */}
