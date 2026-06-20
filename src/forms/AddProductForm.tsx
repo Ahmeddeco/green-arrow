@@ -41,10 +41,11 @@ export default function AddProductForm({ allFactories, allComponents }: Props) {
 		shouldValidate: "onBlur",
 		shouldRevalidate: "onInput",
 	})
+
 	// تتبع الـ components المختارة لإنشاء مدخلات التركيز والوحدة لها
 	const [selectedComponents, setSelectedComponents] = useState<{ id: string; title: string }[]>([])
 
-	// استخراج الـ field list الخاص بالمواد الفعالة لـ Conform
+	// 1. استخراج الـ field list الخاص بالمواد الفعالة لـ Conform
 	const componentList = fields.activeComponents.getFieldList()
 
 	return (
@@ -142,6 +143,7 @@ export default function AddProductForm({ allFactories, allComponents }: Props) {
 				errors={fields.activeComponents.errors}
 				onSelectionChange={(selected) => setSelectedComponents(selected)}
 			/>
+
 			{/* تحديد تركيز ووحدات المواد الفعالة المختارة */}
 			{selectedComponents.length > 0 && (
 				<Card className="p-4 border border-border rounded-lg bg-muted/10 space-y-4">
@@ -149,34 +151,55 @@ export default function AddProductForm({ allFactories, allComponents }: Props) {
 						<CardTitle>تحديد تركيز ووحدات المواد الفعالة المختارة</CardTitle>
 					</CardHeader>
 					<CardContent className="flex flex-col gap-6">
-						{selectedComponents.map((comp, index) => (
-							<div key={comp.id} className="flex items-end justify-center gap-6  ">
-								<Badge>{comp.title}</Badge>
+						{selectedComponents.map((currentComp, index) => {
+							const baseName = `${fields.activeComponents.name}[${index}]`
+							const currentFieldConfig = componentList[index]?.getFieldset()
 
-								<Input type="hidden" name={`${fields.activeComponents.name}[${index}].componentId`} value={comp.id} />
-								{/*  التركيز */}
-								<Field>
-									<FieldLabel>التركيز</FieldLabel>
-									<Input type="number" name={`${fields.activeComponents.name}[${index}].concentration`} />
-								</Field>
-								{/*  الوحدة */}
-								<Field>
-									<FieldLabel>وحدة القياس</FieldLabel>
-									<Select name={`${fields.activeComponents.name}[${index}].unit`}>
-										<SelectTrigger>
-											<SelectValue />
-										</SelectTrigger>
-										<SelectContent>
-											{Object.values(Unit).map((unit, index) => (
-												<SelectItem value={unit} key={index}>
-													{unit}
-												</SelectItem>
-											))}
-										</SelectContent>
-									</Select>
-								</Field>
-							</div>
-						))}
+							return (
+								<div
+									key={currentComp.id}
+									className="flex flex-col gap-2 border-b border-border/40 pb-4 last:border-none last:pb-0"
+								>
+									<div className="flex items-end justify-center gap-6">
+										<Badge>{currentComp.title}</Badge>
+										<Input type="hidden" name={`${baseName}.componentId`} value={currentComp.id} />
+
+										{/* حقل إدخال التركيز */}
+										<Field className="flex-1">
+											<FieldLabel>التركيز</FieldLabel>
+											<Input
+												type="number"
+												name={`${baseName}.concentration`}
+												placeholder="أدخل التركيز"
+												defaultValue={currentFieldConfig?.concentration?.initialValue}
+											/>
+											<FieldError>{currentFieldConfig?.concentration?.errors}</FieldError>
+										</Field>
+
+										{/* حقل اختيار وحدة القياس */}
+										<Field className="flex-1">
+											<FieldLabel>وحدة القياس</FieldLabel>
+											<Select
+												name={`${baseName}.unit`}
+												defaultValue={currentFieldConfig?.unit?.initialValue || Unit.percentage}
+											>
+												<SelectTrigger>
+													<SelectValue />
+												</SelectTrigger>
+												<SelectContent>
+													{Object.values(Unit).map((unit, uIdx) => (
+														<SelectItem value={unit} key={uIdx}>
+															{unit}
+														</SelectItem>
+													))}
+												</SelectContent>
+											</Select>
+											<FieldError>{currentFieldConfig?.unit?.errors}</FieldError>
+										</Field>
+									</div>
+								</div>
+							)
+						})}
 					</CardContent>
 				</Card>
 			)}
@@ -245,6 +268,11 @@ export default function AddProductForm({ allFactories, allComponents }: Props) {
 				imageKey={fields.images.key}
 				imageName={fields.images.name}
 			/>
+
+			{/* عرض الأخطاء العامة للفورم إن وجدت */}
+			{form.errors && (
+				<div className="text-destructive text-sm font-bold bg-destructive/10 p-3 rounded">{form.errors}</div>
+			)}
 
 			{/* ------------------------------ SubmitButton ------------------------------ */}
 			<SubmitButton text={"أضف منتج"} />

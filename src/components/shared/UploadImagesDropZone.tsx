@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 
-import { useState, useEffect } from "react" // 👈 أضفنا useEffect هنا
+import { useState, useEffect } from "react"
 import { toast } from "sonner"
 import { Input } from "../ui/input"
 import { twMerge } from "tailwind-merge"
@@ -23,6 +23,17 @@ type Props = {
 	errors: string[] | undefined
 }
 
+// كائن التنسيق المخصص المتوافق تماماً مع ستايل وهيكل shadcn ui
+const uploadthingShadcnStyles = {
+	container:
+		"border-2 border-dashed border-input bg-card hover:bg-accent/5 transition-colors rounded-xl p-8 cursor-pointer flex flex-col items-center justify-center w-full gap-2",
+	label: "text-sm font-semibold text-foreground",
+	allowedContent: "text-xs text-muted-foreground",
+	uploadIcon: "size-12 text-primary stroke-[1.5]",
+	button:
+		"bg-primary text-primary-foreground shadow-sm hover:bg-primary/90 inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 px-4 py-2 cursor-pointer h-9 mt-2",
+}
+
 /* ------------------------ UploadManyImagesDropZone ------------------------ */
 export function UploadManyImagesDropZone({ dbImages, label = "images", imagesName = "images", errors }: Props) {
 	const splittedImages = (images: string) => {
@@ -32,7 +43,7 @@ export function UploadManyImagesDropZone({ dbImages, label = "images", imagesNam
 	const dbSplittedImages = dbImages ? splittedImages(dbImages?.toString()) : []
 
 	const [images, setImages] = useState<string[]>(dbSplittedImages)
-	const [isMounted, setIsMounted] = useState(false) // 👈 تتبع حالة الـ hydration
+	const [isMounted, setIsMounted] = useState(false)
 
 	useEffect(() => {
 		setIsMounted(true)
@@ -45,39 +56,44 @@ export function UploadManyImagesDropZone({ dbImages, label = "images", imagesNam
 	return (
 		<Field>
 			<FieldLabel>{label}</FieldLabel>
-			<Card className="w-full">
-				<CardContent className="flex flex-col gap-3 w-full">
+			<Card className="w-full shadow-sm">
+				<CardContent className="flex flex-col gap-3 w-full p-6">
 					<Input type="hidden" name={imagesName} value={images} />
 					{images.length > 0 ? (
 						<div className="grid lg:grid-cols-6 grid-cols-3 gap-6">
 							{images.map((image, index) => (
-								<div key={index} className="relative aspect-square w-full ">
+								<div key={index} className="relative aspect-square w-full">
 									<Image
 										src={image}
 										alt="Product Image"
 										fill
-										className="w-full h-full object-contain rounded-lg border border-foreground p-2"
+										className="w-full h-full object-cover rounded-lg border border-border p-1"
 									/>
 
 									<Button
-										variant={"destructive"}
-										size={"icon"}
+										variant="destructive"
+										size="icon"
 										onClick={() => handleDeleteManyImages(index)}
 										type="button"
-										className="absolute -top-3 -right-3 rounded-full"
+										className="absolute -top-2.5 -right-2.5 rounded-full size-6 shadow-sm"
 									>
-										<X />
+										<X className="size-3.5" />
 									</Button>
 								</div>
 							))}
 						</div>
 					) : (
-						// 👈 لا تقم برندرة الـ Dropzone إلا بعد التأكد من أننا على المتصفح
 						isMounted && (
 							<UploadDropzone
 								config={{ cn: twMerge }}
-								className="ut-button:bg-primary ut-button:cursor-pointer ut-button:text-primary-foreground ut-button:px-8 ut-button:py-4 ut-ready:p-12 ut-readying:p-12 ut-uploading:p-12 ut-label:text-foreground ut-upload-icon:size-12 ut-upload-icon:text-foreground "
-								endpoint={"manyImagesUploader"}
+								endpoint="manyImagesUploader"
+								appearance={{
+									container: uploadthingShadcnStyles.container,
+									label: uploadthingShadcnStyles.label,
+									allowedContent: uploadthingShadcnStyles.allowedContent,
+									uploadIcon: uploadthingShadcnStyles.uploadIcon,
+									button: uploadthingShadcnStyles.button,
+								}}
 								onClientUploadComplete={(res: any) => {
 									setImages(res.map((r: any) => r.ufsUrl))
 									toast.success("Images uploaded successfully")
@@ -98,7 +114,7 @@ export function UploadManyImagesDropZone({ dbImages, label = "images", imagesNam
 /* ------------------------- UploadOneImagesDropZone ------------------------ */
 export function UploadOneImagesDropZone({ dbImage, label = "image", imageName = "image", imageKey, errors }: Props) {
 	const [image, setImage] = useState<string>(dbImage || "")
-	const [isMounted, setIsMounted] = useState(false) // 👈 تتبع حالة الـ hydration
+	const [isMounted, setIsMounted] = useState(false)
 
 	useEffect(() => {
 		setIsMounted(true)
@@ -111,37 +127,42 @@ export function UploadOneImagesDropZone({ dbImage, label = "image", imageName = 
 	return (
 		<Field>
 			<FieldLabel>{label}</FieldLabel>
-			<Card className="w-full">
-				<CardContent className="flex flex-col gap-3 w-full">
+			<Card className="w-full shadow-sm">
+				<CardContent className="flex flex-col gap-3 w-full p-6">
 					<Input type="hidden" name={imageName} value={image} key={imageKey} />
 					{image.length > 0 ? (
 						<div className="grid lg:grid-cols-6 grid-cols-3 gap-6">
-							<div className="relative aspect-square w-full ">
+							<div className="relative aspect-square w-full">
 								<Image
 									src={image}
 									alt="Product Image"
 									fill
-									className="w-full h-full object-contain rounded-lg border border-foreground p-2"
+									className="w-full h-full object-cover rounded-lg border border-border p-1"
 								/>
 
 								<Button
-									variant={"destructive"}
-									size={"icon"}
+									variant="destructive"
+									size="icon"
 									onClick={() => handleDeleteOneImages()}
 									type="button"
-									className="absolute -top-3 -right-3 rounded-full"
+									className="absolute -top-2.5 -right-2.5 rounded-full size-6 shadow-sm"
 								>
-									<X />
+									<X className="size-3.5" />
 								</Button>
 							</div>
 						</div>
 					) : (
-						// 👈 لا تقم برندرة الـ Dropzone إلا بعد التأكد من أننا على المتصفح
 						isMounted && (
 							<UploadDropzone
 								config={{ cn: twMerge }}
-								className="ut-button:bg-primary ut-button:text-primary-foreground ut-button:cursor-pointer ut-button:px-8 ut-button:py-4 ut-ready:p-12 ut-readying:p-12 ut-uploading:p-12 ut-label:text-foreground ut-upload-icon:size-12 ut-upload-icon:text-foreground "
-								endpoint={"oneImageUploader"}
+								endpoint="oneImageUploader"
+								appearance={{
+									container: uploadthingShadcnStyles.container,
+									label: uploadthingShadcnStyles.label,
+									allowedContent: uploadthingShadcnStyles.allowedContent,
+									uploadIcon: uploadthingShadcnStyles.uploadIcon,
+									button: uploadthingShadcnStyles.button,
+								}}
 								onClientUploadComplete={(res: any) => {
 									setImage(res[0].ufsUrl)
 									toast.success("Image uploaded successfully")

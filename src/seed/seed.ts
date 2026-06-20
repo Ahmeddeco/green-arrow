@@ -1,9 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Category, OrderStatus, Role, Unit } from "@/generated/prisma/enums"
+import { Role, Unit } from "@/generated/prisma/enums"
 import prisma from "@/lib/prisma"
 import { fakerAR as faker } from '@faker-js/faker'
 import { z } from 'zod'
-
 
 // 1. تعريف مخططات Zod لتوليد بيانات متوافقة وموثوقة أثناء الـ Seeding
 const userSeedSchema = z.object({
@@ -33,12 +32,13 @@ async function main() {
   await prisma.factory.deleteMany()
   await prisma.session.deleteMany()
   await prisma.account.deleteMany()
-  await prisma.verification.deleteMany()
+  // ملاحظة: إذا كان جدول الـ verification غير موجود في السكيما الحالية، فـ Prisma ستحذفه بأمان عبر الـ catch أو يمكنك إزالته إذا لم تستخدمه.
+  try { await (prisma as any).verification.deleteMany() } catch { /* تجنب الخطأ إن لم يكن موجوداً */ }
   await prisma.user.deleteMany()
 
   console.log('✅ تم تنظيف قاعدة البيانات بنجاح.')
 
-  // 2. إنشاء المستخدمين بأدوار مختلفة (Admin, Provider, Seller, Client)
+  // 2. إنشاء المستخدمين بأدوار مختلفة (admin, provider, seller, client) مطابق لـ Prisma Enum
   const usersData = [
     {
       name: 'أحمد محمد عبد الفتاح',
@@ -102,7 +102,6 @@ async function main() {
   }
 
   const providerUser = createdUsers.find(u => u.role === Role.provider)!
-  const clientUser = createdUsers.find(u => u.role === Role.client)!
 
   // 3. إنشاء الشركات / المصانع (Factory) المرتبطة بالمزود (Provider)
   const factories = [
@@ -124,7 +123,7 @@ async function main() {
     createdFactories.push(factory)
   }
 
-  // 4. إنشاء المواد الفعالة (Components) مع الـ Units الجديدة المتنوعة
+  // 4. إنشاء المواد الفعالة (Components) مع الـ Units المتنوعة
   const componentsData = [
     { title: 'Abamectin', unit: Unit.g_liter },
     { title: 'Imidacloprid', unit: Unit.g_liter },
@@ -141,112 +140,6 @@ async function main() {
     const component = await prisma.component.create({ data: c })
     createdComponents.push(component)
   }
-
-  // 5. إنشاء المنتجات (Products) وربطها بالمواد الفعالة عبر الجدول الوسيط `ProductComponent`
-  const productsTemplates = [
-    {
-      title: 'أبامكتين 1.8%',
-      category: Category.acaricides,
-      comps: [{ title: 'Abamectin', concentration: 18 }]
-    },
-    {
-      title: 'كونفيدور حشري',
-      category: Category.insecticides,
-      comps: [{ title: 'Imidacloprid', concentration: 350 }]
-    },
-    {
-      title: 'سماد NPK متوازن 20-20-20',
-      category: Category.fertilizers,
-      comps: [
-        { title: 'Nitrogen (N)', concentration: 20 },
-        { title: 'Phosphorus (P2O5)', concentration: 20 },
-        { title: 'Potassium (K2O)', concentration: 20 }
-      ]
-    },
-    {
-      title: 'شالنجر فائق التميز',
-      category: Category.insecticides,
-      comps: [{ title: 'Abamectin', concentration: 36 }]
-    },
-    {
-      title: 'عناصر صغرى مخلبية',
-      category: Category.fertilizers,
-      comps: [
-        { title: 'Iron (Fe)', concentration: 1500 },
-        { title: 'Zinc (Zn)', concentration: 800 }
-      ]
-    }
-  ]
-
-  const createdProducts = []
-  for (const p of productsTemplates) {
-    const randomFactory = faker.helpers.arrayElement(createdFactories)
-
-    // بناء أجزاء الـ ProductComponent التابعة لهذا المنتج
-    const componentConnections = p.comps.map(c => {
-      const dbComp = createdComponents.find(dc => dc.title === c.title)!
-      return {
-        componentId: dbComp.id,
-        concentration: c.concentration
-      }
-    })
-
-    const product = await prisma.product.create({
-      data: {
-        title: p.title,
-        category: p.category,
-        description: faker.lorem.paragraph(),
-        productUrl: faker.internet.url(),
-        stock: faker.number.float({ min: 10, max: 500, fractionDigits: 2 }), // دعم الكيلوات السائبة واللترات
-        price: faker.number.float({ min: 150, max: 2500, fractionDigits: 2 }),
-        discountPercentage: faker.helpers.arrayElement([0, 5, 10, 15]),
-        mainImage: faker.image.url(),
-        images: [faker.image.url(), faker.image.url()],
-        recommendations: faker.lorem.sentence(),
-        features: faker.lorem.sentence(),
-        phi: 'الطماطم: 7 أيام',
-        factoryId: randomFactory.id,
-        activeComponents: {
-          create: componentConnections
-        }
-      }
-    })
-    createdProducts.push(product)
-  }
-
-  // 6. إنشاء عينة من طلبات الشراء (Orders & OrderItems) للعميل التجاري
-  const order = await prisma.order.create({
-    data: {
-      userId: clientUser.id,
-      totalAmount: 0, // سيتم حسابها وتحديثها بناءً على الـ Items
-      status: OrderStatus.processing,
-      address: clientUser.addressDescription || 'العنوان الافتراضي للمزرعة',
-    }
-  })
-
-  let calculatedTotal = 0
-  const selectedProducts = faker.helpers.arrayElements(createdProducts, 2)
-
-  for (const prod of selectedProducts) {
-    const qty = faker.number.int({ min: 1, max: 5 })
-    const itemPrice = prod.price * (1 - prod.discountPercentage / 100)
-    calculatedTotal += itemPrice * qty
-
-    await prisma.orderItem.create({
-      data: {
-        orderId: order.id,
-        productId: prod.id,
-        quantity: qty,
-        price: itemPrice // تثبيت السعر وقت الشراء بحسب شروط السكيما لحماية الفاتورة
-      }
-    })
-  }
-
-  // تحديث إجمالي الطلب بالقيمة الحقيقية المحسوبة
-  await prisma.order.update({
-    where: { id: order.id },
-    data: { totalAmount: parseFloat(calculatedTotal.toFixed(2)) }
-  })
 
   console.log('🚀 تمت عملية الـ Seeding بالكامل بنجاح وملئت الجداول بالبيانات المتوافقة!')
 }

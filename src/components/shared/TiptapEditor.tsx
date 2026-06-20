@@ -20,6 +20,7 @@ import {
 } from "lucide-react"
 import { useEffect, useState } from "react"
 import { Separator } from "../ui/separator"
+import { Card, CardHeader, CardTitle } from "../ui/card"
 
 interface TiptapEditorProps {
 	name: string
@@ -35,16 +36,8 @@ export default function TiptapEditor({ name, editorKey, defaultValue = "", onCha
 		extensions: [
 			StarterKit.configure({
 				heading: { HTMLAttributes: {} },
-				bulletList: {
-					HTMLAttributes: {
-						class: "list-disc pr-6 my-2 space-y-1",
-					},
-				},
-				orderedList: {
-					HTMLAttributes: {
-						class: "list-decimal pr-6 my-2 space-y-1",
-					},
-				},
+				bulletList: {},
+				orderedList: {},
 			}),
 		],
 		content: defaultValue,
@@ -68,17 +61,17 @@ export default function TiptapEditor({ name, editorKey, defaultValue = "", onCha
 	// مزامنة القيمة القادمة من الخارج بأمان
 	useEffect(() => {
 		if (editor && defaultValue !== editor.getHTML()) {
-			// عند استدعاء هذا الأمر، سيقوم Tiptap تلقائياً بإطلاق حدث onUpdate بالأعلى
-			// وبالتالي سيتم تحديث الـ Trigger بشكل غير تزامني وآمن تماماً دون الحاجة لاستدعائه هنا
 			editor.commands.setContent(defaultValue)
 		}
 	}, [defaultValue, editor])
 
 	if (!editor) {
 		return (
-			<div className="h-[150px] w-full rounded-md border border-input bg-muted/50 animate-pulse flex items-center justify-center text-sm text-muted-foreground">
-				جاري تحميل المحرر...
-			</div>
+			<Card>
+				<CardHeader>
+					<CardTitle>جاري تحميل المحرر</CardTitle>
+				</CardHeader>
+			</Card>
 		)
 	}
 
@@ -218,16 +211,7 @@ export default function TiptapEditor({ name, editorKey, defaultValue = "", onCha
 			{/* --------------------------- Workspace Container --------------------------- */}
 			<div
 				dir="rtl"
-				className="prose dark:prose-invert max-w-none bg-card text-foreground min-h-[150px]
-					[&_.tiptap]:focus:outline-none
-					[&_.tiptap_h1]:text-3xl [&_.tiptap_h1]:lg:text-4xl [&_.tiptap_h1]:font-black [&_.tiptap_h1]:mt-6 [&_.tiptap_h1]:mb-4 [&_.tiptap_h1]:text-start
-					[&_.tiptap_h2]:text-2xl [&_.tiptap_h2]:lg:text-3xl [&_.tiptap_h2]:font-bold [&_.tiptap_h2]:mt-5 [&_.tiptap_h2]:mb-3 [&_.tiptap_h2]:text-start
-					[&_.tiptap_h3]:text-xl [&_.tiptap_h3]:lg:text-2xl [&_.tiptap_h3]:font-semibold [&_.tiptap_h4]:mt-4 [&_.tiptap_h3]:mb-2 [&_.tiptap_h3]:text-start
-					[&_.tiptap_h4]:text-lg [&_.tiptap_h4]:lg:text-xl [&_.tiptap_h4]:font-medium [&_.tiptap_h4]:mb-1 [&_.tiptap_h4]:text-start
-					[&_.tiptap_h5]:text-base [&_.tiptap_h5]:lg:text-lg [&_.tiptap_h5]:font-normal [&_.tiptap_h5]:mt-2 [&_.tiptap_h5]:mb-1 [&_.tiptap_h5]:text-start
-					[&_.tiptap_h6]:text-sm [&_.tiptap_h6]:lg:text-base [&_.tiptap_h6]:font-light [&_.tiptap_h6]:mt-2 [&_.tiptap_h6]:mb-1 [&_.tiptap_h6]:text-start
-					[&_.tiptap_p]:text-xs [&_.tiptap_p]:lg:text-sm [&_.tiptap_p]:font-extralight [&_.tiptap_p]:text-muted-foreground [&_.tiptap_p]:leading-relaxed [&_.tiptap_p]:text-start
-					[&_.tiptap_blockquote]:border-r-4 [&_.tiptap_blockquote]:border-l-0 [&_.tiptap_blockquote]:border-primary [&_.tiptap_blockquote]:pr-4 [&_.tiptap_blockquote]:italic"
+				className="prose dark:prose-invert max-w-none bg-card text-foreground min-h-[100px] p-3 focus-within:outline-none"
 			>
 				<EditorContent editor={editor} />
 			</div>

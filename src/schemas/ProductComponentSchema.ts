@@ -3,9 +3,9 @@ import { z } from 'zod'
 
 export const ProductComponentSchema = z.object({
   unit: UnitSchema,
-  productId: z.string(),
+  productId: z.string().nullish(),
   componentId: z.string(),
-  concentration: z.number().nullish(),
+  concentration: z.number().positive().nullish(),
 })
 
 export type ProductComponent = z.infer<typeof ProductComponentSchema>

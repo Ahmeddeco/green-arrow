@@ -4,19 +4,18 @@ import { parseWithZod } from "@conform-to/zod"
 import prisma from "@/lib/prisma"
 import { redirect } from "next/navigation"
 import ProductSchema from "@/schemas/ProductSchema"
+import { splittedImages } from "@/logic/splitThings"
 
 /* ------------------------------ addProductAction ----------------------------- */
 export const addProductAction = async (prevState: unknown, formData: FormData) => {
   const submission = parseWithZod(formData, {
     schema: ProductSchema,
   })
-
   if (submission.status !== 'success') {
     return submission.reply()
   }
-
   const data = submission.value
-
+  const separatedImages = splittedImages(data.images[0])
   try {
     await prisma.product.create({
       data: {
@@ -31,13 +30,10 @@ export const addProductAction = async (prevState: unknown, formData: FormData) =
         stock: Number(data.stock),
         discountPercentage: Number(data.discountPercentage),
         mainImage: data.mainImage,
-        images: data.images,
-
-        // ربط المصنع
+        images: separatedImages,
         factory: {
           connect: { id: data.factoryId }
         },
-
         // إنشاء السجلات في الجدول الوسيط للمواد الفعالة
         activeComponents: {
           create: data.activeComponents.map((comp) => ({
