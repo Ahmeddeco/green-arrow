@@ -1,3 +1,4 @@
+import { getAllProductsForServerProductsPage, getOneProductForEditProductPage } from "@/dl/products.data"
 import { Category, Unit } from "@/generated/prisma/enums"
 
 /* ---------------------------- ProductCardType ---------------------------- */
@@ -19,3 +20,6 @@ export type ProductCardType = {
     userId: string
   }[]
 } | undefined
+
+export type getAllProductsForServerProductsPageType = Awaited<ReturnType<typeof getAllProductsForServerProductsPage>>
+export type getOneProductForEditProductPageType = Awaited<ReturnType<typeof getOneProductForEditProductPage>>

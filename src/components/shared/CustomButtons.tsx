@@ -71,7 +71,7 @@ export const CheckOutButton = () => {
 				</Button>
 			) : (
 				<Button type="button" onClick={() => console.log("CheckOut Button pressed!")}>
-					<IoBagCheckOutline /> اتمام عملية الشراء
+					<IoBagCheckOutline /> إتمام عملية الشراء
 				</Button>
 			)}
 		</>

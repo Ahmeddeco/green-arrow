@@ -24,7 +24,7 @@ export const getOneFactoryForEditFactoryPage = async (id: string) => {
 
 /* ----------------------------- getAllFactories ---------------------------- */
 export const getAllFactories = async (size: number, page: number) => {
-  const totalStudents = await prisma.user.count()
+  const totalStudents = await prisma.factory.count()
   const totalPages = Math.ceil(totalStudents / size)
 
   try {

@@ -4,12 +4,13 @@ import { getAllComponents } from "@/dl/components.data"
 import { getAllFactoriesForProductPage } from "@/dl/factories.data"
 import AddProductForm from "@/forms/AddProductForm"
 import { getAllComponentsType } from "@/types/components.type"
+import { getAllFactoriesForProductPageType } from "@/types/factories.type"
 import { CircleChevronLeft } from "lucide-react"
 
 export default async function AddFactoriesPage() {
 	await isAllowedRoles(["admin"])
-	const allFactories = await getAllFactoriesForProductPage()
-	const allComponents:getAllComponentsType = await getAllComponents()
+	const allFactories: getAllFactoriesForProductPageType = await getAllFactoriesForProductPage()
+	const allComponents: getAllComponentsType = await getAllComponents()
 
 	return (
 		<ServerPageCard
@@ -19,7 +20,7 @@ export default async function AddFactoriesPage() {
 			btnTitle={"الرجوع"}
 			href="/server/products"
 		>
-			<AddProductForm allFactories={ allFactories } allComponents={ allComponents } />
+			<AddProductForm allFactories={allFactories} allComponents={allComponents} />
 		</ServerPageCard>
 	)
 }

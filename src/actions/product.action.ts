@@ -64,19 +64,57 @@ export const editProductAction = async (prevState: unknown, formData: FormData) 
   const submission = parseWithZod(formData, {
     schema: ProductSchema,
   })
+
   if (submission.status !== 'success') {
     return submission.reply()
   }
+
+  const data = submission.value
+  // تأمين جلب الصور كما أصلحناها سابقاً
+  const imagesRawValue = formData.get("images")?.toString() || ""
+  const separatedImages = splittedImages(imagesRawValue)
+
   try {
     await prisma.product.update({
-      where: { id: submission.value.id! },
+      where: { id: data.id! },
       data: {
-
+        title: data.title,
+        description: data.description,
+        recommendations: data.recommendations,
+        features: data.features,
+        phi: data.phi,
+        category: data.category,
+        productUrl: data.productUrl,
+        price: Number(data.price),
+        stock: Number(data.stock),
+        discountPercentage: Number(data.discountPercentage),
+        mainImage: data.mainImage,
+        images: separatedImages,
+        factory: {
+          connect: { id: data.factoryId }
+        },
+        // 💡 الحل هنا: نقوم بحذف العلاقات القديمة أولاً للمنتج ثم ننشئ المواد الفعالة الجديدة 
+        activeComponents: {
+          deleteMany: {}, // مسح الروابط القديمة المرتبطة بـ productId هذا بأمان
+          create: data.activeComponents.map((comp) => ({
+            concentration: comp.concentration ? Number(comp.concentration) : null,
+            unit: comp.unit,
+            component: {
+              connect: {
+                id: comp.componentId,
+              },
+            },
+          })),
+        },
       },
     })
   } catch (error) {
-    console.error(error)
+    console.error("Failed to update product: ", error)
+    return submission.reply({
+      formErrors: ["حدث خطأ أثناء حفظ المنتج ومكوناته الفعالة في قاعدة البيانات."],
+    })
   }
+
   redirect("/server/products")
 }
 
@@ -88,7 +126,7 @@ export const deleteProductAction = async (formData: FormData) => {
       where: { id: id as string },
     })
   } catch (error) {
-    console.error(error)
+    console.error("Failed to create product: ", error)
   }
   redirect("/server/products")
 }

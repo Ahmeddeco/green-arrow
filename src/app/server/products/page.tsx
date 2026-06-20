@@ -1,3 +1,178 @@
-export default function ProductsServerPage() {
-  return <h1>Welcome to ProductsServerpage!</h1>;
+import { ImageOff, Link2, MoreVertical, PlusCircle } from "lucide-react"
+import ServerPageCard from "@/components/shared/ServerPageCard"
+import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import {
+	Pagination,
+	PaginationContent,
+	PaginationItem,
+	PaginationLink,
+	PaginationNext,
+	PaginationPrevious,
+} from "@/components/ui/pagination"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import { Button } from "@/components/ui/button"
+import Link from "next/link"
+import {
+	Dialog,
+	DialogClose,
+	DialogContent,
+	DialogDescription,
+	DialogHeader,
+	DialogTitle,
+	DialogTrigger,
+} from "@/components/ui/dialog"
+import Form from "next/form"
+import { Input } from "@/components/ui/input"
+import Image from "next/image"
+import React from "react"
+import { isAllowedRoles } from "@/auth/isAllowedRoles"
+import { getAllProductsForServerProductsPageType } from "@/types/Product.type"
+import { getAllProductsForServerProductsPage } from "@/dl/products.data"
+import { Badge } from "@/components/ui/badge"
+import { deleteProductAction } from "@/actions/product.action"
+
+export default async function ProductsServerPage({
+	searchParams,
+}: {
+	searchParams: Promise<{ page: string; size: string }>
+}) {
+	await isAllowedRoles(["admin"])
+
+	const { page, size } = await searchParams
+	const pageNumber = +page > 1 ? +page : 1
+	const pageSize = +size || 10
+	const products: getAllProductsForServerProductsPageType = await getAllProductsForServerProductsPage(
+		pageSize,
+		pageNumber,
+	)
+
+	return (
+		<ServerPageCard
+			icon={PlusCircle}
+			title={"جميع المنتجات"}
+			description={"جميع المنتجات في قاعدة البيانات."}
+			btnTitle={"أضف منتج"}
+			href={"/server/products/add"}
+		>
+			<div className="flex flex-col gap-6">
+				<Table>
+					{/* ---------------------------- TableHeader ---------------------------- */}
+					<TableHeader>
+						<TableRow>
+							<TableHead>اللوجو</TableHead>
+							<TableHead>اسم المنتج</TableHead>
+							<TableHead>اسم المصنع</TableHead>
+							<TableHead>توع المنتج</TableHead>
+							<TableHead>المواد الفعالة</TableHead>
+							<TableHead className="text-left">الإعدادات</TableHead>
+						</TableRow>
+					</TableHeader>
+					{/* ----------------------------- TableBody ----------------------------- */}
+					<TableBody>
+						{products?.data.map(({ activeComponents, category, factory, mainImage, title, id }) => (
+							<TableRow key={id}>
+								<TableCell>
+									{mainImage ? (
+										<Image
+											src={mainImage}
+											alt={"user"}
+											width={50}
+											height={50}
+											className="rounded-sm object-cover aspect-square"
+										/>
+									) : (
+										React.createElement(ImageOff)
+									)}
+								</TableCell>
+								<TableCell>{title}</TableCell>
+								<TableCell className="capitalize">{factory.name}</TableCell>
+								<TableCell>{category} </TableCell>
+								<TableCell className="flex flex-wrap items-center gap-4">
+									{activeComponents.map(({ component }, index) => (
+										<Badge key={index} variant={"secondary"}>
+											{component.title}
+										</Badge>
+									))}
+								</TableCell>
+
+								{/* -------------------------------- settings -------------------------------- */}
+								<TableCell className="text-left col-span-1">
+									<DropdownMenu>
+										<DropdownMenuTrigger asChild>
+											<Button variant={"ghost"} size={"icon"}>
+												<MoreVertical />
+											</Button>
+										</DropdownMenuTrigger>
+										<DropdownMenuContent align="start" className="space-y-2 p-2">
+											{/* ----------------------------- edit ---------------------------- */}
+											<DropdownMenuItem asChild>
+												<Button variant={"outline"} size={"full"} asChild>
+													<Link href={`/server/products/edit/${id}`}>تعديل</Link>
+												</Button>
+											</DropdownMenuItem>
+											{/* ---------------------------- delete --------------------------- */}
+											<DropdownMenuItem asChild>
+												<Dialog>
+													<DialogTrigger asChild>
+														<Button variant={"destructive"} size={"full"}>
+															حذف
+														</Button>
+													</DialogTrigger>
+													<DialogContent>
+														<DialogHeader>
+															<DialogTitle>هل أنت متأكد من رغبتك في حذف هذا المنتج ؟</DialogTitle>
+															<DialogDescription>
+																لا يمكن التراجع عن هذا الإجراء. سيؤدي ذلك إلى حذف هذا المنتج نهائيًا وإزالة بياناته من
+																خوادمنا.
+															</DialogDescription>
+														</DialogHeader>
+														<div className="flex items-center justify-between ">
+															<Button asChild variant={"default"}>
+																<DialogClose>إلغاء الحذف</DialogClose>
+															</Button>
+															<Form action={deleteProductAction}>
+																<Input type="hidden" name="id" value={id} />
+																<Button type="submit" variant={"destructive"}>
+																	الحذف نهائيا
+																</Button>
+															</Form>
+														</div>
+													</DialogContent>
+												</Dialog>
+											</DropdownMenuItem>
+										</DropdownMenuContent>
+									</DropdownMenu>
+								</TableCell>
+							</TableRow>
+						))}
+					</TableBody>
+					{/* ---------------------------- Pagination ---------------------------- */}
+					<TableCaption>
+						<Pagination>
+							<PaginationContent>
+								<PaginationItem>
+									{/* --------------------------- Previous --------------------------- */}
+									{pageNumber > 1 && <PaginationPrevious href={`?size=${pageSize}&page=${pageNumber - 1}`} />}
+								</PaginationItem>
+								{/* ------------------------- PaginationLink ------------------------ */}
+								{Array.from({ length: products!.totalPages ?? 1 }).map((_, index) => (
+									<PaginationItem key={index}>
+										<PaginationLink href={`?size=${pageSize}&page=${index + 1}`} isActive={pageNumber === index + 1}>
+											{index + 1}
+										</PaginationLink>
+									</PaginationItem>
+								))}
+								<PaginationItem>
+									{/* ----------------------------- Next ----------------------------- */}
+									{pageNumber < products!.totalPages && (
+										<PaginationNext href={`?size=${pageSize}&page=${pageNumber + 1}`} />
+									)}
+								</PaginationItem>
+							</PaginationContent>
+						</Pagination>
+					</TableCaption>
+				</Table>
+			</div>
+		</ServerPageCard>
+	)
 }

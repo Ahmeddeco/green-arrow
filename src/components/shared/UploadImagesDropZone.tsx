@@ -14,7 +14,7 @@ import { UploadDropzone } from "@/utils/uploadthing"
 import { Field, FieldError, FieldLabel } from "../ui/field"
 
 type Props = {
-	dbImages?: string[]
+	dbImages?: string[] | string
 	dbImage?: string
 	label?: string
 	imageName?: string
@@ -23,7 +23,6 @@ type Props = {
 	errors: string[] | undefined
 }
 
-// كائن التنسيق المخصص المتوافق تماماً مع ستايل وهيكل shadcn ui
 const uploadthingShadcnStyles = {
 	container:
 		"border-2 border-dashed border-input bg-card hover:bg-accent/5 transition-colors rounded-xl p-8 cursor-pointer flex flex-col items-center justify-center w-full gap-2",
@@ -36,18 +35,26 @@ const uploadthingShadcnStyles = {
 
 /* ------------------------ UploadManyImagesDropZone ------------------------ */
 export function UploadManyImagesDropZone({ dbImages, label = "images", imagesName = "images", errors }: Props) {
-	const splittedImages = (images: string) => {
-		const imagesArray = images.split(",").map((image) => image.trim())
-		return imagesArray
+	// تحويل وتنظيف البيانات لمنع النصوص الفارغة تماماً
+	const parseImages = (input: any): string[] => {
+		if (!input) return []
+		if (Array.isArray(input)) return input.filter(Boolean)
+		return input
+			.toString()
+			.split(",")
+			.map((img: string) => img.trim())
+			.filter(Boolean) // 👈 فلترة النصوص الفارغة تماماً للتخلص من الخطأ
 	}
-	const dbSplittedImages = dbImages ? splittedImages(dbImages?.toString()) : []
 
-	const [images, setImages] = useState<string[]>(dbSplittedImages)
+	const [images, setImages] = useState<string[]>([])
 	const [isMounted, setIsMounted] = useState(false)
 
 	useEffect(() => {
 		setIsMounted(true)
-	}, [])
+		if (dbImages) {
+			setImages(parseImages(dbImages))
+		}
+	}, [dbImages])
 
 	const handleDeleteManyImages = (index: number) => {
 		setImages(images.filter((_, i) => i !== index))
@@ -58,7 +65,9 @@ export function UploadManyImagesDropZone({ dbImages, label = "images", imagesNam
 			<FieldLabel>{label}</FieldLabel>
 			<Card className="w-full shadow-sm">
 				<CardContent className="flex flex-col gap-3 w-full p-6">
-					<Input type="hidden" name={imagesName} value={images} />
+					{/* تحويل المصفوفة إلى نص مفصول بفواصل عند الإرسال للفورم */}
+					<Input type="hidden" name={imagesName} value={images.join(",")} />
+
 					{images.length > 0 ? (
 						<div className="grid lg:grid-cols-6 grid-cols-3 gap-6">
 							{images.map((image, index) => (
@@ -113,12 +122,15 @@ export function UploadManyImagesDropZone({ dbImages, label = "images", imagesNam
 
 /* ------------------------- UploadOneImagesDropZone ------------------------ */
 export function UploadOneImagesDropZone({ dbImage, label = "image", imageName = "image", imageKey, errors }: Props) {
-	const [image, setImage] = useState<string>(dbImage || "")
+	const [image, setImage] = useState<string>("")
 	const [isMounted, setIsMounted] = useState(false)
 
 	useEffect(() => {
 		setIsMounted(true)
-	}, [])
+		if (dbImage) {
+			setImage(dbImage.trim())
+		}
+	}, [dbImage])
 
 	const handleDeleteOneImages = () => {
 		setImage("")
@@ -130,7 +142,7 @@ export function UploadOneImagesDropZone({ dbImage, label = "image", imageName = 
 			<Card className="w-full shadow-sm">
 				<CardContent className="flex flex-col gap-3 w-full p-6">
 					<Input type="hidden" name={imageName} value={image} key={imageKey} />
-					{image.length > 0 ? (
+					{image && image.length > 0 ? (
 						<div className="grid lg:grid-cols-6 grid-cols-3 gap-6">
 							<div className="relative aspect-square w-full">
 								<Image

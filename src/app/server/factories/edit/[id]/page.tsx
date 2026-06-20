@@ -8,10 +8,8 @@ import { CircleChevronLeft } from "lucide-react"
 export default async function EditFactoriesPage({ params }: { params: Promise<{ id: string }> }) {
 	await isAllowedRoles(["admin"])
 	const allUsers = await getAllUsersForFactoryPage()
-	const tel = (await params).id
-	const oneFactory = await getOneFactoryForEditFactoryPage(tel)
-
-	console.log("oneFactory from edit factories page", oneFactory)
+	const id = (await params).id
+	const oneFactory = await getOneFactoryForEditFactoryPage(id)
 
 	return (
 		<ServerPageCard
