@@ -105,6 +105,7 @@ export default function AddFactoryForm({ allUsers }: Props) {
 				imageKey={fields.logo.key}
 				imageName={fields.logo.name}
 			/>
+			{form.errors && <FieldError>{form.errors}</FieldError>}
 
 			{/* ------------------------------ SubmitButton ------------------------------ */}
 			<SubmitButton text={"أضف مصنع"} />

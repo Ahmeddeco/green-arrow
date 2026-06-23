@@ -82,7 +82,7 @@ export default async function FactoriesServerPage({
 									)}
 								</TableCell>
 								<TableCell className="capitalize">{name}</TableCell>
-								<TableCell>{owner.name}</TableCell>
+								<TableCell className="capitalize">{owner.name}</TableCell>
 								<TableCell>{tel} </TableCell>
 								<TableCell className="lowercase">{email} </TableCell>
 								<TableCell>

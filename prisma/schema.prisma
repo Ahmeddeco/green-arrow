@@ -162,7 +162,7 @@ model Product {
   category           Category // القسم التجاري والفني للمنتج
   recommendations    String?
   features           String?
-  phi                Int // فترة ما قبل الحصاد
+  phi                String
   factory            Factory            @relation(fields: [factoryId], references: [id])
   createdAt          DateTime           @default(now())
   updatedAt          DateTime           @updatedAt
@@ -185,7 +185,7 @@ enum ProductUnit {
 model ProductComponent {
   productId     String
   componentId   String
-  concentration Int?
+  concentration Float?
   unit          ComponentUnit @default(percentage)
   product       Product       @relation(fields: [productId], references: [id], onDelete: Cascade)
   component     Component     @relation(fields: [componentId], references: [id], onDelete: Cascade)

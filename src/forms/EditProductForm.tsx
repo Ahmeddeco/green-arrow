@@ -23,6 +23,7 @@ import { getAllFactoriesForProductPageType } from "@/types/factories.type"
 import { getOneProductForEditProductPageType } from "@/types/Product.type"
 import { ComponentUnit } from "@/generated/prisma/enums"
 import ProductUnitSchema from "@/generated/zod/inputTypeSchemas/ProductUnitSchema"
+import { Textarea } from "@/components/ui/textarea"
 
 type Props = {
 	allFactories: getAllFactoriesForProductPageType
@@ -54,24 +55,15 @@ export default function EditProductForm({ allFactories, allComponents, oneProduc
 			</Field>
 
 			{/* ------------------------------- description ------------------------------ */}
-			<TiptapEditor
-				editorKey={fields.description.key}
-				name={fields.description.name}
-				defaultValue={oneProduct?.description ?? ""}
-				label={"وصف المنتج"}
-				errors={fields.description.errors}
-				id={fields.description.id}
-			/>
-
-			{/* ----------------------------- recommendations ---------------------------- */}
-			<TiptapEditor
-				key={fields.recommendations.key}
-				name={fields.recommendations.name}
-				defaultValue={oneProduct?.recommendations ?? ""}
-				label={"التوصيات"}
-				errors={fields.recommendations.errors}
-				id={fields.recommendations.id}
-			/>
+			<Field>
+				<FieldLabel htmlFor={fields.description.name}>وصف المنتج</FieldLabel>
+				<Textarea
+					key={fields.description.key}
+					name={fields.description.name}
+					defaultValue={oneProduct?.description ?? ""}
+				/>
+				<FieldError>{fields.description.errors}</FieldError>
+			</Field>
 
 			{/* -------------------------------- features -------------------------------- */}
 			<TiptapEditor
@@ -83,14 +75,16 @@ export default function EditProductForm({ allFactories, allComponents, oneProduc
 				id={fields.features.id}
 			/>
 
+			{/* ----------------------------- recommendations ---------------------------- */}
+			<TiptapEditor
+				key={fields.recommendations.key}
+				name={fields.recommendations.name}
+				defaultValue={oneProduct?.recommendations ?? ""}
+				label={"التوصيات"}
+				errors={fields.recommendations.errors}
+				id={fields.recommendations.id}
+			/>
 			<div className="flex items-center gap-4">
-				{/* ----------------------------------- phi ---------------------------------- */}
-				<Field>
-					<FieldLabel htmlFor={fields.phi.name}>فترة ما قبل الحصاد</FieldLabel>
-					<Input type="number" key={fields.phi.key} name={fields.phi.name} defaultValue={oneProduct?.phi} />
-					<FieldError>{fields.phi.errors}</FieldError>
-				</Field>
-
 				{/* -------------------------------- category -------------------------------- */}
 				<Field>
 					<FieldLabel htmlFor={fields.category.name}>نوع المبيد</FieldLabel>
@@ -137,6 +131,12 @@ export default function EditProductForm({ allFactories, allComponents, oneProduc
 				</Field>
 			</div>
 
+			{/* ----------------------------------- phi ---------------------------------- */}
+			<Field>
+				<FieldLabel htmlFor={fields.phi.name}>فترة ما قبل الحصاد</FieldLabel>
+				<Textarea key={fields.phi.key} name={fields.phi.name} defaultValue={fields.phi.initialValue} />
+				<FieldError>{fields.phi.errors}</FieldError>
+			</Field>
 			{/* ---------------------------- activeComponents --------------------------- */}
 			<MultiComponentSelect
 				allSelectedData={allComponents}
@@ -181,6 +181,7 @@ export default function EditProductForm({ allFactories, allComponents, oneProduc
 												placeholder="أدخل التركيز"
 												// نستخدم القيمة القادمة من الـ Database كـ fallback أساسي لضمان ظهور البيانات أثناء التعديل
 												defaultValue={existingData?.concentration ?? ""}
+												step={"any"}
 											/>
 										</Field>
 

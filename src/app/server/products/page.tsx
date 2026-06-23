@@ -1,4 +1,4 @@
-import { ImageOff, Link2, MoreVertical, PlusCircle } from "lucide-react"
+import { ImageOff, MoreVertical, PlusCircle } from "lucide-react"
 import ServerPageCard from "@/components/shared/ServerPageCard"
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import {
@@ -85,9 +85,9 @@ export default async function ProductsServerPage({
 									React.createElement(ImageOff)
 								)}
 							</TableCell>
-							<TableCell>{title}</TableCell>
+							<TableCell className="capitalize ">{title}</TableCell>
 							<TableCell className="capitalize ">{factory.name}</TableCell>
-							<TableCell>{category} </TableCell>
+							<TableCell className="capitalize ">{category} </TableCell>
 							<TableCell className="flex flex-wrap  items-center gap-4">
 								{activeComponents.map(({ component }, index) => (
 									<Badge key={index} variant={"secondary"}>

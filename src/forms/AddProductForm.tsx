@@ -22,6 +22,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { getAllFactoriesForProductPageType } from "@/types/factories.type"
 import { ComponentUnit } from "@/generated/prisma/enums"
 import ProductUnitSchema from "@/generated/zod/inputTypeSchemas/ProductUnitSchema"
+import { Textarea } from "@/components/ui/textarea"
 
 type Props = {
 	allFactories: getAllFactoriesForProductPageType
@@ -55,24 +56,15 @@ export default function AddProductForm({ allFactories, allComponents }: Props) {
 			</Field>
 
 			{/* ------------------------------- description ------------------------------ */}
-			<TiptapEditor
-				editorKey={fields.description.key}
-				name={fields.description.name}
-				defaultValue={fields.description.initialValue}
-				label={"وصف المنتج"}
-				errors={fields.description.errors}
-				id={fields.description.id}
-			/>
-
-			{/* ----------------------------- recommendations ---------------------------- */}
-			<TiptapEditor
-				key={fields.recommendations.key}
-				name={fields.recommendations.name}
-				defaultValue={fields.recommendations.initialValue}
-				label={"التوصيات"}
-				errors={fields.recommendations.errors}
-				id={fields.recommendations.id}
-			/>
+			<Field>
+				<FieldLabel htmlFor={fields.description.name}>وصف المنتج</FieldLabel>
+				<Textarea
+					key={fields.description.key}
+					name={fields.description.name}
+					defaultValue={fields.description.initialValue}
+				/>
+				<FieldError>{fields.description.errors}</FieldError>
+			</Field>
 
 			{/* -------------------------------- features -------------------------------- */}
 			<TiptapEditor
@@ -84,14 +76,16 @@ export default function AddProductForm({ allFactories, allComponents }: Props) {
 				id={fields.features.id}
 			/>
 
+			{/* ----------------------------- recommendations ---------------------------- */}
+			<TiptapEditor
+				key={fields.recommendations.key}
+				name={fields.recommendations.name}
+				defaultValue={fields.recommendations.initialValue}
+				label={"التوصيات"}
+				errors={fields.recommendations.errors}
+				id={fields.recommendations.id}
+			/>
 			<div className="flex items-center gap-4">
-				{/* ----------------------------------- phi ---------------------------------- */}
-				<Field>
-					<FieldLabel htmlFor={fields.phi.name}>فترة ما قبل الحصاد</FieldLabel>
-					<Input type="number" key={fields.phi.key} name={fields.phi.name} defaultValue={fields.phi.initialValue} />
-					<FieldError>{fields.phi.errors}</FieldError>
-				</Field>
-
 				{/* -------------------------------- category -------------------------------- */}
 				<Field>
 					<FieldLabel htmlFor={fields.category.name}>نوع المبيد</FieldLabel>
@@ -138,6 +132,13 @@ export default function AddProductForm({ allFactories, allComponents }: Props) {
 				</Field>
 			</div>
 
+			{/* ----------------------------------- phi ---------------------------------- */}
+			<Field>
+				<FieldLabel htmlFor={fields.phi.name}>فترة ما قبل الحصاد</FieldLabel>
+				<Textarea key={fields.phi.key} name={fields.phi.name} defaultValue={fields.phi.initialValue} />
+				<FieldError>{fields.phi.errors}</FieldError>
+			</Field>
+
 			{/* ---------------------------- activeComponents --------------------------- */}
 			<MultiComponentSelect
 				allSelectedData={allComponents}
@@ -174,6 +175,7 @@ export default function AddProductForm({ allFactories, allComponents }: Props) {
 												name={`${baseName}.concentration`}
 												placeholder="أدخل التركيز"
 												defaultValue={currentFieldConfig?.concentration?.initialValue}
+												step={"any"}
 											/>
 											<FieldError>{currentFieldConfig?.concentration?.errors}</FieldError>
 										</Field>
@@ -266,7 +268,7 @@ export default function AddProductForm({ allFactories, allComponents }: Props) {
 						type="number"
 						key={fields.discountPercentage.key}
 						name={fields.discountPercentage.name}
-						defaultValue={fields.discountPercentage.initialValue}
+						defaultValue={0}
 					/>
 					<FieldError>{fields.discountPercentage.errors}</FieldError>
 				</Field>

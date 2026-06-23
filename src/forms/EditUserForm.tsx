@@ -105,6 +105,7 @@ export default function EditUserForm({ user }: Props) {
 				/>
 				<FieldError>{fields.addressDescription.errors}</FieldError>
 			</Field>
+			{form.errors && <FieldError>{form.errors}</FieldError>}
 
 			{/* ------------------------------ SubmitButton ------------------------------ */}
 			<SubmitButton text={"عدل المستخدم"} />

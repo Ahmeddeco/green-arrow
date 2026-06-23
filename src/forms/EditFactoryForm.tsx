@@ -108,6 +108,7 @@ export default function EditFactoryForm({ allUsers, oneFactory }: Props) {
 				imageName={fields.logo.name}
 				dbImage={oneFactory?.logo ?? ""}
 			/>
+			{form.errors && <FieldError>{form.errors}</FieldError>}
 
 			{/* ------------------------------ SubmitButton ------------------------------ */}
 			<SubmitButton text={"عدل بيانات المصنع"} />

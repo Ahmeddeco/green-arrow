@@ -118,6 +118,7 @@ export default function AddUserForm({ authUser }: Props) {
 				/>
 				<FieldError>{fields.addressDescription.errors}</FieldError>
 			</Field>
+			{form.errors && <FieldError>{form.errors}</FieldError>}
 
 			{/* ------------------------------ SubmitButton ------------------------------ */}
 			<SubmitButton text={"أضف مستخدم"} />

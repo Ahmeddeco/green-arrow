@@ -54,6 +54,7 @@ export default function EditComponentForm({ oneComponent }: Props) {
 				</Select>
 				<FieldError>{fields.unit.errors}</FieldError>
 			</Field>
+			{form.errors && <FieldError>{form.errors}</FieldError>}
 
 			{/* ------------------------------ SubmitButton ------------------------------ */}
 			<SubmitButton text={"عدل  المادة الفعالة"} />

@@ -50,6 +50,8 @@ export default function AddComponentForm() {
 				<FieldError>{fields.unit.errors}</FieldError>
 			</Field>
 
+			{form.errors && <FieldError>{form.errors}</FieldError>}
+
 			{/* ------------------------------ SubmitButton ------------------------------ */}
 			<SubmitButton text={"أضف مادة فعالة"} />
 		</Form>
