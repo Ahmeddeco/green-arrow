@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 
 import { useForm } from "@conform-to/react"
@@ -16,10 +17,11 @@ import { getAllComponentsType } from "@/types/components.type"
 import TiptapEditor from "@/components/shared/TiptapEditor"
 import CategorySchema from "@/generated/zod/inputTypeSchemas/CategorySchema"
 import MultiComponentSelect from "@/components/shared/MultiComponentSelect"
-import { Unit } from "@/generated/prisma/enums"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { getAllFactoriesForProductPageType } from "@/types/factories.type"
+import { ComponentUnit } from "@/generated/prisma/enums"
+import ProductUnitSchema from "@/generated/zod/inputTypeSchemas/ProductUnitSchema"
 
 type Props = {
 	allFactories: getAllFactoriesForProductPageType
@@ -35,13 +37,13 @@ export default function AddProductForm({ allFactories, allComponents }: Props) {
 		},
 		shouldValidate: "onBlur",
 		shouldRevalidate: "onInput",
-	})
+	}) as any
 
 	// تتبع الـ components المختارة لإنشاء مدخلات التركيز والوحدة لها
 	const [selectedComponents, setSelectedComponents] = useState<{ id: string; title: string }[]>([])
 
 	// 1. استخراج الـ field list الخاص بالمواد الفعالة لـ Conform
-	const componentList = fields.activeComponents.getFieldList()
+	const componentList = fields.activeComponents?.getFieldList?.() ?? []
 
 	return (
 		<Form id={form.id} action={action} onSubmit={form.onSubmit} className="space-y-6 ">
@@ -181,13 +183,13 @@ export default function AddProductForm({ allFactories, allComponents }: Props) {
 											<FieldLabel>وحدة القياس</FieldLabel>
 											<Select
 												name={`${baseName}.unit`}
-												defaultValue={currentFieldConfig?.unit?.initialValue || Unit.percentage}
+												defaultValue={currentFieldConfig?.unit?.initialValue || ComponentUnit.percentage}
 											>
 												<SelectTrigger>
 													<SelectValue />
 												</SelectTrigger>
 												<SelectContent>
-													{Object.values(Unit).map((unit, uIdx) => (
+													{Object.values(ComponentUnit).map((unit, uIdx) => (
 														<SelectItem value={unit} key={uIdx}>
 															{unit}
 														</SelectItem>
@@ -204,20 +206,48 @@ export default function AddProductForm({ allFactories, allComponents }: Props) {
 				</Card>
 			)}
 
-			{/* --------------------------------- website -------------------------------- */}
-			<Field>
-				<FieldLabel htmlFor={fields.productUrl.name}>صفحة المنتج </FieldLabel>
-				<Input
-					type="url"
-					key={fields.productUrl.key}
-					name={fields.productUrl.name}
-					defaultValue={fields.productUrl.initialValue}
-				/>
-				<FieldError>{fields.productUrl.errors}</FieldError>
-			</Field>
+			{/* ----------------------- size , Unit , productUrl ---------------------- */}
+			<div className="flex lg:flex-row items-center flex-col gap-4">
+				{/* size */}
+				<Field>
+					<FieldLabel htmlFor={fields.size.name}>الحجم</FieldLabel>
+					<Input type="number" key={fields.size.key} name={fields.size.name} defaultValue={fields.size.initialValue} />
+					<FieldError>{fields.size.errors}</FieldError>
+				</Field>
+
+				{/* Unit */}
+				<Field>
+					<FieldLabel htmlFor={fields.unit.name}>وحدة القياس</FieldLabel>
+					<Select key={fields.unit.key} name={fields.unit.name} defaultValue={ProductUnitSchema.Enum.cm}>
+						<SelectTrigger>
+							<SelectValue />
+						</SelectTrigger>
+						<SelectContent>
+							{Object.values(ProductUnitSchema.Enum).map((unit, index) => (
+								<SelectItem value={unit} key={index}>
+									{unit}
+								</SelectItem>
+							))}
+						</SelectContent>
+					</Select>
+					<FieldError>{fields.unit.errors}</FieldError>
+				</Field>
+
+				{/* productUrl */}
+				<Field>
+					<FieldLabel htmlFor={fields.productUrl.name}>صفحة المنتج </FieldLabel>
+					<Input
+						type="url"
+						key={fields.productUrl.key}
+						name={fields.productUrl.name}
+						defaultValue={fields.productUrl.initialValue}
+					/>
+					<FieldError>{fields.productUrl.errors}</FieldError>
+				</Field>
+			</div>
 
 			{/* ----------------- price &  stock & discountPercentage ----------------- */}
-			<div className="flex items-center gap-4">
+			<div className="flex lg:flex-row items-center flex-col gap-4">
 				{/* price */}
 				<Field>
 					<FieldLabel htmlFor={fields.price.name}>السعر</FieldLabel>
@@ -242,7 +272,7 @@ export default function AddProductForm({ allFactories, allComponents }: Props) {
 				</Field>
 				{/* stock */}
 				<Field>
-					<FieldLabel htmlFor={fields.stock.name}>الكمية</FieldLabel>
+					<FieldLabel htmlFor={fields.stock.name}>المخزون</FieldLabel>
 					<Input
 						type="number"
 						key={fields.stock.key}
@@ -270,9 +300,7 @@ export default function AddProductForm({ allFactories, allComponents }: Props) {
 			/>
 
 			{/* عرض الأخطاء العامة للفورم إن وجدت */}
-			{form.errors && (
-				<div className="text-destructive text-sm font-bold bg-destructive/10 p-3 rounded">{form.errors}</div>
-			)}
+			{form.errors && <FieldError>{form.errors}</FieldError>}
 
 			{/* ------------------------------ SubmitButton ------------------------------ */}
 			<SubmitButton text={"أضف منتج"} />

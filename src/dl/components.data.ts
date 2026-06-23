@@ -29,7 +29,7 @@ export const getOneComponent = async (id: string) => {
 export const getAllComponents = async () => {
   try {
     return await prisma.component.findMany({
-      select: { id: true, title: true },
+      select: { id: true, title: true, unit: true },
       orderBy: { title: "asc" }
     })
   } catch (error) {

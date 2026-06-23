@@ -8,13 +8,13 @@
 		"@conform-to/zod": "^1.19.3",
 		"@hugeicons/core-free-icons": "^4.2.0",
 		"@hugeicons/react": "^1.1.6",
-		"@mastra/agent-browser": "^0.3.1",
-		"@mastra/ai-sdk": "^1.4.5",
-		"@mastra/core": "^1.42.0",
-		"@mastra/editor": "^0.11.2",
-		"@mastra/libsql": "^1.13.0",
-		"@mastra/memory": "^1.20.3",
-		"@mastra/stagehand": "^0.2.4",
+		"@mastra/agent-browser": "^0.4.0",
+		"@mastra/ai-sdk": "^1.5.0",
+		"@mastra/core": "^1.45.0",
+		"@mastra/editor": "^0.13.0",
+		"@mastra/libsql": "^1.14.0",
+		"@mastra/memory": "^1.21.0",
+		"@mastra/stagehand": "^0.3.0",
 		"@prisma/adapter-pg": "^7.8.0",
 		"@prisma/client": "^7.8.0",
 		"@tiptap/pm": "^3.27.0",
@@ -34,7 +34,7 @@
 		"leaflet": "^1.9.4",
 		"lucide": "^1.17.0",
 		"lucide-react": "^1.17.0",
-		"mastra": "^1.13.0",
+		"mastra": "^1.15.0",
 		"next": "16.2.7",
 		"next-themes": "^0.4.6",
 		"ollama-ai-provider-v2": "^3.5.1",
@@ -99,5 +99,6 @@
 		"test": "vitest"
 	},
 	"type": "module",
-	"version": "0.1.0"
+	"version": "0.1.0",
+	"packageManager": "pnpm@11.8.0+sha512.c1f5e7c4cb241c8f174b743851d82f42b802324afc8b0f116b96adb15aa06664948dde36960a3ba1079ba5b4b29dd0140135b94b5b5f5263592249d68e555f26"
 }

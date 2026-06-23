@@ -1,8 +1,8 @@
-import UnitSchema from "@/generated/zod/inputTypeSchemas/UnitSchema"
+import ComponentUnitSchema from "@/generated/zod/inputTypeSchemas/ComponentUnitSchema"
 import { z } from 'zod'
 
 export const ProductComponentSchema = z.object({
-  unit: UnitSchema,
+  unit: ComponentUnitSchema,
   productId: z.string().nullish(),
   componentId: z.string(),
   concentration: z.number().positive().nullish(),

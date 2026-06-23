@@ -1,10 +1,10 @@
-import UnitSchema from "@/generated/zod/inputTypeSchemas/UnitSchema"
+import ComponentUnitSchema from "@/generated/zod/inputTypeSchemas/ComponentUnitSchema"
 import { z } from 'zod'
 
 export const ComponentSchema = z.object({
   id: z.string().nullish(),
   title: z.string(),
-  unit: UnitSchema,
+  unit: ComponentUnitSchema,
 })
 
 export type Component = z.infer<typeof ComponentSchema>

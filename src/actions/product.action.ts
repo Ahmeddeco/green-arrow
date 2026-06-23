@@ -25,6 +25,8 @@ export const addProductAction = async (prevState: unknown, formData: FormData) =
         features: data.features,
         phi: data.phi,
         category: data.category,
+        unit: data.unit,
+        size: data.size,
         productUrl: data.productUrl,
         price: Number(data.price),
         stock: Number(data.stock),

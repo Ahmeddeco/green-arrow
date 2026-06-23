@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Role, Unit } from "@/generated/prisma/enums"
+import { ComponentUnit, Role, } from "@/generated/prisma/enums"
 import prisma from "@/lib/prisma"
 import { fakerAR as faker } from '@faker-js/faker'
 import { z } from 'zod'
@@ -21,43 +21,25 @@ const userSeedSchema = z.object({
 })
 
 async function main() {
-  console.log('⏳ بدء عملية تغذية قاعدة البيانات (Seeding)...')
-
-  // تنظيف البيانات القديمة بترتيب عكسي لتجنب مشاكل الـ Foreign Keys
-  await prisma.orderItem.deleteMany()
-  await prisma.order.deleteMany()
-  await prisma.productComponent.deleteMany()
-  await prisma.product.deleteMany()
-  await prisma.component.deleteMany()
-  await prisma.factory.deleteMany()
-  await prisma.session.deleteMany()
-  await prisma.account.deleteMany()
-  // ملاحظة: إذا كان جدول الـ verification غير موجود في السكيما الحالية، فـ Prisma ستحذفه بأمان عبر الـ catch أو يمكنك إزالته إذا لم تستخدمه.
-  try { await (prisma as any).verification.deleteMany() } catch { /* تجنب الخطأ إن لم يكن موجوداً */ }
-  await prisma.user.deleteMany()
-
-  console.log('✅ تم تنظيف قاعدة البيانات بنجاح.')
-
-  // 2. إنشاء المستخدمين بأدوار مختلفة (admin, provider, seller, client) مطابق لـ Prisma Enum
   const usersData = [
     {
-      name: 'أحمد محمد عبد الفتاح',
-      email: 'ahmed.admin@example.com',
+      name: faker.person.fullName(),
+      email: faker.internet.email(),
       emailVerified: true,
       role: Role.admin,
-      mainMobile: '01012345678',
+      mainMobile: '01503150014',
       city: 'البر الشرقي',
       state: 'المنوفية',
       country: 'مصر',
       lat: 30.5612,
       lng: 31.0123,
-      addressDescription: 'بجوار مستشفى المواساة',
+      addressDescription: "",
     },
     {
       name: faker.person.fullName(),
-      email: 'provider@factory.com',
+      email: faker.internet.email(),
       emailVerified: true,
-      role: Role.provider,
+      role: Role.client,
       mainMobile: faker.phone.number({ style: 'international' }),
       city: 'طنطا',
       state: 'الغربية',
@@ -68,22 +50,22 @@ async function main() {
     },
     {
       name: faker.person.fullName(),
-      email: 'seller@store.com',
+      email: faker.internet.email(),
       emailVerified: true,
       role: Role.seller,
       mainMobile: faker.phone.number({ style: 'international' }),
-      city: 'شبين الكوم',
-      state: 'المنوفية',
+      city: 'Mataria',
+      state: 'Cairo',
       country: 'مصر',
       lat: 30.5521,
       lng: 31.0094,
-      addressDescription: 'شارع الجلاء الرئيسي',
+      addressDescription: "",
     },
     {
       name: faker.person.fullName(),
-      email: 'client@farm.com',
+      email: faker.internet.email(),
       emailVerified: true,
-      role: Role.client,
+      role: Role.provider,
       mainMobile: faker.phone.number({ style: 'international' }),
       city: 'السادات',
       state: 'المنوفية',
@@ -105,9 +87,9 @@ async function main() {
 
   // 3. إنشاء الشركات / المصانع (Factory) المرتبطة بالمزود (Provider)
   const factories = [
-    { name: 'سينجنتا مصر', tel: '0221234567', email: 'info@syngenta.com', website: 'https://syngenta.com' },
-    { name: 'باير للعلوم الزراعية', tel: '0229876543', email: 'info@bayer.com', website: 'https://bayer.com' },
-    { name: 'كفر الزيات للمبيدات', tel: '0404567891', email: 'kz@kz-pesticides.com', website: 'https://kz-pesticides.com' }
+    { name: 'سينجنتا مصر', tel: faker.phone.number({ style: 'international' }), email: 'info@syngenta.com', website: 'https://www.syngentame.com/ar-eg' },
+    { name: 'باير للعلوم الزراعية', tel: faker.phone.number({ style: 'international' }), email: 'info@bayer.com', website: 'https://www.bayer.com/ar/ae/middle-east-ar-home' },
+    { name: 'كفر الزيات للمبيدات', tel: faker.phone.number({ style: 'international' }), email: 'kz@kz-pesticides.com', website: 'https://www.kz.com.eg/ar/' }
   ]
 
   const createdFactories = []
@@ -125,14 +107,14 @@ async function main() {
 
   // 4. إنشاء المواد الفعالة (Components) مع الـ Units المتنوعة
   const componentsData = [
-    { title: 'Abamectin', unit: Unit.g_liter },
-    { title: 'Imidacloprid', unit: Unit.g_liter },
-    { title: 'Glyphosate', unit: Unit.g_kg },
-    { title: 'Nitrogen (N)', unit: Unit.percentage },
-    { title: 'Phosphorus (P2O5)', unit: Unit.percentage },
-    { title: 'Potassium (K2O)', unit: Unit.percentage },
-    { title: 'Iron (Fe)', unit: Unit.ppm },
-    { title: 'Zinc (Zn)', unit: Unit.ppm },
+    { title: 'Abamectin', unit: ComponentUnit.g_liter },
+    { title: 'Imidacloprid', unit: ComponentUnit.g_liter },
+    { title: 'Glyphosate', unit: ComponentUnit.g_kg },
+    { title: 'Nitrogen (N)', unit: ComponentUnit.percentage },
+    { title: 'Phosphorus (P2O5)', unit: ComponentUnit.percentage },
+    { title: 'Potassium (K2O)', unit: ComponentUnit.percentage },
+    { title: 'Iron (Fe)', unit: ComponentUnit.ppm },
+    { title: 'Zinc (Zn)', unit: ComponentUnit.ppm },
   ]
 
   const createdComponents: any[] = []
@@ -141,12 +123,12 @@ async function main() {
     createdComponents.push(component)
   }
 
-  console.log('🚀 تمت عملية الـ Seeding بالكامل بنجاح وملئت الجداول بالبيانات المتوافقة!')
+  console.log('🚀 Seeding Completed Successfully !')
 }
 
 main()
-  .catch((e) => {
-    console.error('❌ حدث خطأ أثناء عملية الـ Seeding:', e)
+  .catch((error) => {
+    console.error(error)
     process.exit(1)
   })
   .finally(async () => {

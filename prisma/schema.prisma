@@ -137,7 +137,7 @@ model Factory {
 model Component {
   id        String             @id @default(cuid())
   title     String             @unique // اسم المادة الفعالة (مثل: Abamectin, Imidacloprid)
-  unit      Unit               @default(percentage)
+  unit      ComponentUnit      @default(percentage)
   products  ProductComponent[]
   createdAt DateTime           @default(now())
   updatedAt DateTime           @updatedAt
@@ -153,6 +153,8 @@ model Product {
   description        String? // شرح للمنتج، الآفات المستهدفة، ومعدلات الاستخدام
   productUrl         String? // رابط خارجي للمنتج أو لصحيفة البيانات الفنية (Data Sheet)
   stock              Float              @default(0) // كمية المخزون (Float لدعم بيع اللترات أو الكيلوات السائبة)
+  size               Float
+  unit               ProductUnit        @default(cm)
   price              Float              @default(0) // السعر الحالي للمنتج بالمتجر
   discountPercentage Float?             @default(0) // نسبة الخصم إن وجدت (مثال: 15% تخفض من السعر تلقائياً)
   mainImage          String // الصورة الرئيسية للمنتج في الكارت والمعاينات
@@ -170,20 +172,29 @@ model Product {
   @@index([factoryId])
 }
 
+enum ProductUnit {
+  liter
+  cm
+  gm
+  kg
+  piece
+  seed
+}
+
 // الجدول الوسيط لربط المواد الفعالة بالمنتجات مع تحديد تركيز كل مادة
 model ProductComponent {
   productId     String
   componentId   String
   concentration Int?
-  unit          Unit      @default(percentage)
-  product       Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
-  component     Component @relation(fields: [componentId], references: [id], onDelete: Cascade)
+  unit          ComponentUnit @default(percentage)
+  product       Product       @relation(fields: [productId], references: [id], onDelete: Cascade)
+  component     Component     @relation(fields: [componentId], references: [id], onDelete: Cascade)
 
   @@id([productId, componentId])
   @@index([componentId])
 }
 
-enum Unit {
+enum ComponentUnit {
   g_liter    @map("جم/لتر")
   percentage @map("%")
   g_kg       @map("جرام/كيلوجرام")

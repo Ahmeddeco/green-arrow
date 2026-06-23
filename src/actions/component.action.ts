@@ -19,6 +19,7 @@ export const addComponentAction = async (prevState: unknown, formData: FormData)
     await prisma.component.create({
       data: {
         title: submission.value.title,
+        unit: submission.value.unit
       }
     })
   } catch (error) {
@@ -54,6 +55,7 @@ export const editComponentAction = async (prevState: unknown, formData: FormData
       where: { id: submission.value.id! },
       data: {
         title: submission.value.title,
+        unit: submission.value.unit
       }
     })
   } catch (error) {

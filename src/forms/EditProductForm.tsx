@@ -17,11 +17,12 @@ import { getAllComponentsType } from "@/types/components.type"
 import TiptapEditor from "@/components/shared/TiptapEditor"
 import CategorySchema from "@/generated/zod/inputTypeSchemas/CategorySchema"
 import MultiComponentSelect from "@/components/shared/MultiComponentSelect"
-import { Unit } from "@/generated/prisma/enums"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { getAllFactoriesForProductPageType } from "@/types/factories.type"
 import { getOneProductForEditProductPageType } from "@/types/Product.type"
+import { ComponentUnit } from "@/generated/prisma/enums"
+import ProductUnitSchema from "@/generated/zod/inputTypeSchemas/ProductUnitSchema"
 
 type Props = {
 	allFactories: getAllFactoriesForProductPageType
@@ -186,12 +187,12 @@ export default function EditProductForm({ allFactories, allComponents, oneProduc
 										{/* حقل اختيار وحدة القياس */}
 										<Field className="flex-1">
 											<FieldLabel>وحدة القياس</FieldLabel>
-											<Select name={`${baseName}.unit`} defaultValue={existingData?.unit || Unit.percentage}>
+											<Select name={`${baseName}.unit`} defaultValue={existingData?.unit || ComponentUnit.percentage}>
 												<SelectTrigger>
 													<SelectValue />
 												</SelectTrigger>
 												<SelectContent>
-													{Object.values(Unit).map((unit, uIdx) => (
+													{Object.values(ComponentUnit).map((unit, uIdx) => (
 														<SelectItem value={unit} key={uIdx}>
 															{unit}
 														</SelectItem>
@@ -207,20 +208,48 @@ export default function EditProductForm({ allFactories, allComponents, oneProduc
 				</Card>
 			)}
 
-			{/* --------------------------------- productUrl -------------------------------- */}
-			<Field>
-				<FieldLabel htmlFor={fields.productUrl.name}>صفحة المنتج </FieldLabel>
-				<Input
-					type="url"
-					key={fields.productUrl.key}
-					name={fields.productUrl.name}
-					defaultValue={oneProduct?.productUrl ?? ""}
-				/>
-				<FieldError>{fields.productUrl.errors}</FieldError>
-			</Field>
+			{/* ----------------------- size , Unit , productUrl ---------------------- */}
+			<div className="flex lg:flex-row items-center flex-col gap-4">
+				{/* size */}
+				<Field>
+					<FieldLabel htmlFor={fields.size.name}>الحجم</FieldLabel>
+					<Input type="number" key={fields.size.key} name={fields.size.name} defaultValue={oneProduct?.size} />
+					<FieldError>{fields.size.errors}</FieldError>
+				</Field>
+
+				{/* Unit */}
+				<Field>
+					<FieldLabel htmlFor={fields.unit.name}>وحدة القياس</FieldLabel>
+					<Select key={fields.unit.key} name={fields.unit.name} defaultValue={oneProduct?.unit}>
+						<SelectTrigger>
+							<SelectValue />
+						</SelectTrigger>
+						<SelectContent>
+							{Object.values(ProductUnitSchema.Enum).map((unit, index) => (
+								<SelectItem value={unit} key={index}>
+									{unit}
+								</SelectItem>
+							))}
+						</SelectContent>
+					</Select>
+					<FieldError>{fields.unit.errors}</FieldError>
+				</Field>
+
+				{/* productUrl */}
+				<Field>
+					<FieldLabel htmlFor={fields.productUrl.name}>صفحة المنتج </FieldLabel>
+					<Input
+						type="url"
+						key={fields.productUrl.key}
+						name={fields.productUrl.name}
+						defaultValue={oneProduct?.productUrl ?? ""}
+					/>
+					<FieldError>{fields.productUrl.errors}</FieldError>
+				</Field>
+			</div>
 
 			{/* ----------------- price &  stock & discountPercentage ----------------- */}
-			<div className="flex items-center gap-4">
+			<div className="flex lg:flex-row items-center flex-col gap-4">
 				{/* price */}
 				<Field>
 					<FieldLabel htmlFor={fields.price.name}>السعر</FieldLabel>
@@ -240,12 +269,11 @@ export default function EditProductForm({ allFactories, allComponents, oneProduc
 				</Field>
 				{/* stock */}
 				<Field>
-					<FieldLabel htmlFor={fields.stock.name}>الكمية</FieldLabel>
+					<FieldLabel htmlFor={fields.stock.name}>المخزون</FieldLabel>
 					<Input type="number" key={fields.stock.key} name={fields.stock.name} defaultValue={oneProduct?.stock} />
 					<FieldError>{fields.stock.errors}</FieldError>
 				</Field>
 			</div>
-
 			{/* ---------------------------------- mainImage --------------------------------- */}
 			<UploadOneImagesDropZone
 				errors={fields.mainImage.errors}
@@ -265,9 +293,7 @@ export default function EditProductForm({ allFactories, allComponents, oneProduc
 			/>
 
 			{/* عرض الأخطاء العامة للفورم إن وجدت */}
-			{form.errors && (
-				<div className="text-destructive text-sm font-bold bg-destructive/10 p-3 rounded">{form.errors}</div>
-			)}
+			{form.errors && <FieldError>{form.errors}</FieldError>}
 
 			{/* ------------------------------ SubmitButton ------------------------------ */}
 			<SubmitButton text={"عدل المنتج"} />

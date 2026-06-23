@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input"
 import ComponentSchema from "@/schemas/ComponentSchema"
 import { addComponentAction } from "@/actions/component.action"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Unit } from "@/generated/prisma/enums"
+import { ComponentUnit } from "@/generated/prisma/enums"
 
 export default function AddComponentForm() {
 	const [lastResult, action] = useActionState(addComponentAction, undefined)
@@ -34,13 +34,13 @@ export default function AddComponentForm() {
 
 			{/* ---------------------------------- Unit ---------------------------------- */}
 			<Field>
-				<FieldLabel htmlFor={fields.unit.name}>category</FieldLabel>
-				<Select key={fields.unit.key} name={fields.unit.name} defaultValue={fields.unit.initialValue}>
+				<FieldLabel htmlFor={fields.unit.name}>وحدة القياس</FieldLabel>
+				<Select key={fields.unit.key} name={fields.unit.name} defaultValue={ComponentUnit.percentage}>
 					<SelectTrigger>
 						<SelectValue />
 					</SelectTrigger>
 					<SelectContent>
-						{Object.values(Unit).map((unit, index) => (
+						{Object.values(ComponentUnit).map((unit, index) => (
 							<SelectItem value={unit} key={index}>
 								{unit}
 							</SelectItem>
