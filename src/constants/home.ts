@@ -2,6 +2,7 @@ import { FaBacterium, FaWorm } from "react-icons/fa6"
 import { GiFertilizerBag, GiHangingSpider, GiHighGrass, GiPlantSeed, GiTreeGrowth } from "react-icons/gi"
 import { BsBugFill } from "react-icons/bs"
 import { FaTools } from "react-icons/fa"
+import CategorySchema from "@/generated/zod/inputTypeSchemas/CategorySchema"
 
 /* -------------------------------- heroData -------------------------------- */
 
@@ -49,12 +50,12 @@ export const ourCategories = [
   {
     title: "مبيدات حشائش",
     icon: GiHighGrass,
-    category: "grass"
+    category: CategorySchema.Enum.herbicides
   },
   {
     title: "مبيدات حشرية",
     icon: BsBugFill,
-    category: "insect"
+    category: CategorySchema.Enum.insecticides
   },
   {
     title: "مبيدات فطرية",
@@ -64,31 +65,31 @@ export const ourCategories = [
   {
     title: "مبيدات أكاروس",
     icon: GiHangingSpider,
-    category: "mites"
+    category: CategorySchema.Enum.acaricides
   },
   {
     title: "مبيدات نيماتودا",
     icon: FaWorm,
-    category: "nematodes"
+    category: CategorySchema.Enum.nematicides
   },
   {
     title: "منظمات نمو",
     icon: GiTreeGrowth,
-    category: "growth"
+    category: CategorySchema.Enum.growth_regulators
   },
   {
     title: "أسمدة",
     icon: GiFertilizerBag,
-    category: "fertilizers"
+    category: CategorySchema.Enum.fertilizers
   },
   {
     title: "بذور",
     icon: GiPlantSeed,
-    category: "seeds"
+    category: CategorySchema.Enum.fertilizers
   },
   {
     title: "أدوات",
     icon: FaTools,
-    category: "tools"
+    category: CategorySchema.Enum.tools
   },
 ]

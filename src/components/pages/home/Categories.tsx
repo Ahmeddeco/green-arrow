@@ -17,7 +17,7 @@ export default function Categories() {
 					<CarouselContent className="-ml-2 md:-ml-4">
 						{ourCategories.map(({ icon, title, category }, index) => (
 							<CarouselItem className="basis-1/2 md:basis-1/3 lg:basis-1/4 pl-2 md:pl-4 " key={index}>
-								<Link href={`/products?category=${category}`}>
+								<Link href={`/products/?category=${category}`}>
 									<Card>
 										<CardContent className="flex items-center justify-center">
 											{React.createElement(icon, { size: 108 })}

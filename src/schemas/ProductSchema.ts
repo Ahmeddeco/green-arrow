@@ -18,7 +18,7 @@ export const ProductSchema = z.object({
   images: z.string().array(),
   recommendations: z.string().nullish(),
   features: z.string().nullish(),
-  phi: z.string(),
+  phi: z.string().nullish(),
   factoryId: z.string(),
   activeComponents: z.array(ProductComponentSchema).min(1),
 })

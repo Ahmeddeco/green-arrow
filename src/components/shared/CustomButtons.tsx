@@ -5,8 +5,8 @@ import { Button } from "../ui/button"
 import { Loader2, ShoppingBag, X } from "lucide-react"
 import { useCartStore } from "@/store/cartStore"
 import { IoBagCheckOutline } from "react-icons/io5"
-import { ProductCardType } from "@/types/Product.type"
 import { useSession } from "@/lib/auth-client"
+import { ProductCardType } from "@/types/Product.type"
 
 type SubmitButtonType = {
 	title: string

@@ -48,7 +48,13 @@ export default function Cart() {
 					{items.map(({ id, image, price, quantity, title, increaseByOne }) => (
 						<Item key={id} variant="default" role="listitem">
 							<ItemMedia variant="image" className="relative aspect-square size-24">
-								<Image src={image} alt={title} fill className="object-cover rounded-md " />
+								<Image
+									src={image}
+									alt={title}
+									fill
+									className="object-cover rounded-md "
+									sizes="(max-width: 1024px) 100vw, (max-width: 1280px) 50vw, 600px"
+								/>
 								<Button
 									size={"icon"}
 									variant={"destructive"}

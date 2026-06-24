@@ -195,31 +195,31 @@
 	}
 	h1,
 	.prose h1 {
-		@apply text-3xl lg:text-4xl font-black text-center lg:text-start text-foreground mt-6 mb-4;
+		@apply text-3xl lg:text-4xl font-black text-start text-foreground mt-6 mb-4;
 	}
 	h2,
 	.prose h2 {
-		@apply text-2xl lg:text-3xl font-bold text-center lg:text-start text-foreground mt-5 mb-3;
+		@apply text-2xl lg:text-3xl font-bold text-start text-foreground mt-5 mb-3;
 	}
 	h3,
 	.prose h3 {
-		@apply text-xl lg:text-2xl font-semibold text-center lg:text-start text-foreground mt-4 mb-2;
+		@apply text-xl lg:text-2xl font-semibold text-start text-foreground mt-4 mb-2;
 	}
 	h4,
 	.prose h4 {
-		@apply text-lg lg:text-xl font-medium text-center lg:text-start text-foreground mb-1;
+		@apply text-lg lg:text-xl font-medium text-start text-foreground mb-1;
 	}
 	h5,
 	.prose h5 {
-		@apply text-base lg:text-lg font-normal text-center lg:text-start text-foreground mt-2 mb-1;
+		@apply text-base lg:text-lg font-normal text-start text-foreground mt-2 mb-1;
 	}
 	h6,
 	.prose h6 {
-		@apply text-sm lg:text-base font-light text-pretty text-center lg:text-start text-foreground mt-2 mb-1;
+		@apply text-sm lg:text-base font-light text-pretty text-start text-foreground mt-2 mb-1;
 	}
 	p,
 	.prose p {
-		@apply text-xs lg:text-sm font-extralight text-muted-foreground text-center lg:text-start leading-relaxed;
+		@apply text-xs lg:text-sm font-extralight text-muted-foreground text-start  leading-relaxed;
 	}
 	.prose ul {
 		@apply list-disc pr-6 pl-0 my-2 space-y-1;

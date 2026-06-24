@@ -38,6 +38,7 @@ export default function OurServices() {
 						src={"/images/TractoreKofra.webp"}
 						alt={"Our Services"}
 						fill
+						sizes="(max-width: 1024px) 100vw, (max-width: 1280px) 50vw, 600px"
 						className="object-cover rounded-xl shadow-lg"
 					/>
 				</div>

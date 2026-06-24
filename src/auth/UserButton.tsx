@@ -21,13 +21,25 @@ export default async function UserButton() {
 				<DropdownMenu>
 					<DropdownMenuTrigger>
 						<div className="size-8 relative rounded-full">
-							<Image src={user.image ?? "/icons/noImage.svg"} alt={"user"} fill className="rounded-full object-cover" />
+							<Image
+								src={user.image ?? "/icons/noImage.svg"}
+								alt={"user"}
+								fill
+								className="rounded-full object-cover"
+								sizes="(max-width: 1024px) 100vw, (max-width: 1280px) 50vw, 600px"
+							/>
 						</div>
 					</DropdownMenuTrigger>
 					<DropdownMenuContent align="start" sideOffset={8} className="w-fit max-w-xl">
 						<DropdownMenuLabel>
 							<div className="w-full aspect-square relative rounded-xl">
-								<Image src={user.image ?? "/icons/noImage.svg"} alt={"user"} fill className="rounded-xl object-cover" />
+								<Image
+									src={user.image ?? "/icons/noImage.svg"}
+									alt={"user"}
+									fill
+									className="rounded-xl object-cover"
+									sizes="(max-width: 1024px) 100vw, (max-width: 1280px) 50vw, 600px"
+								/>
 							</div>
 						</DropdownMenuLabel>
 						<DropdownMenuSeparator />

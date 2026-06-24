@@ -84,6 +84,91 @@ export default function EditProductForm({ allFactories, allComponents, oneProduc
 				errors={fields.recommendations.errors}
 				id={fields.recommendations.id}
 			/>
+
+			{/* ----------------------------------- phi ---------------------------------- */}
+			<TiptapEditor
+				key={fields.phi.key}
+				name={fields.phi.name}
+				defaultValue={fields.phi.initialValue}
+				label={"PHI"}
+				errors={fields.phi.errors}
+				id={fields.phi.id}
+			/>
+
+			{/* ---------------------------- activeComponents --------------------------- */}
+			<div className="space-y-4">
+				<MultiComponentSelect
+					allSelectedData={allComponents}
+					label={"المادة الفعالة"}
+					errors={fields.activeComponents.errors}
+					onSelectionChange={(selected) => setSelectedComponents(selected)}
+					defaultValues={oneProduct?.activeComponents}
+				/>
+
+				{/* تحديد تركيز ووحدات المواد الفعالة المختارة */}
+				{selectedComponents.length > 0 && (
+					<Card className="p-4 border border-border rounded-lg bg-muted/10 space-y-4">
+						<CardHeader>
+							<CardTitle>تحديد تركيز ووحدات المواد الفعالة المختارة</CardTitle>
+						</CardHeader>
+						<CardContent className="flex flex-col gap-6">
+							{selectedComponents.map((currentComp, index) => {
+								const baseName = `${fields.activeComponents.name}[${index}]`
+
+								// البحث عن القيمة المخزنة مسبقاً لهذا العنصر بالتحديد في قاعدة البيانات إن وجدت
+								const existingData = oneProduct?.activeComponents?.find(
+									(item: any) => item.componentId === currentComp.id,
+								)
+
+								return (
+									<div
+										key={currentComp.id}
+										className="flex flex-col gap-2 border-b border-border/40 pb-4 last:border-none last:pb-0"
+									>
+										<div className="flex items-end justify-center gap-6">
+											<Badge variant="outline" className="h-9 px-3 text-sm">
+												{currentComp.title}
+											</Badge>
+											<Input type="hidden" name={`${baseName}.componentId`} value={currentComp.id} />
+
+											{/* حقل إدخال التركيز */}
+											<Field className="flex-1">
+												<FieldLabel>التركيز</FieldLabel>
+												<Input
+													type="number"
+													name={`${baseName}.concentration`}
+													placeholder="أدخل التركيز"
+													// نستخدم القيمة القادمة من الـ Database كـ fallback أساسي لضمان ظهور البيانات أثناء التعديل
+													defaultValue={existingData?.concentration ?? ""}
+													step={"any"}
+												/>
+											</Field>
+
+											{/* حقل اختيار وحدة القياس */}
+											<Field className="flex-1">
+												<FieldLabel>وحدة القياس</FieldLabel>
+												<Select name={`${baseName}.unit`} defaultValue={existingData?.unit || ComponentUnit.percentage}>
+													<SelectTrigger>
+														<SelectValue />
+													</SelectTrigger>
+													<SelectContent>
+														{Object.values(ComponentUnit).map((unit, uIdx) => (
+															<SelectItem value={unit} key={uIdx}>
+																{unit}
+															</SelectItem>
+														))}
+													</SelectContent>
+												</Select>
+											</Field>
+										</div>
+									</div>
+								)
+							})}
+						</CardContent>
+					</Card>
+				)}
+			</div>
+
 			<div className="flex items-center gap-4">
 				{/* -------------------------------- category -------------------------------- */}
 				<Field>
@@ -130,84 +215,6 @@ export default function EditProductForm({ allFactories, allComponents, oneProduc
 					<FieldError>{fields.factoryId.errors}</FieldError>
 				</Field>
 			</div>
-
-			{/* ----------------------------------- phi ---------------------------------- */}
-			<Field>
-				<FieldLabel htmlFor={fields.phi.name}>فترة ما قبل الحصاد</FieldLabel>
-				<Textarea key={fields.phi.key} name={fields.phi.name} defaultValue={fields.phi.initialValue} />
-				<FieldError>{fields.phi.errors}</FieldError>
-			</Field>
-			{/* ---------------------------- activeComponents --------------------------- */}
-			<MultiComponentSelect
-				allSelectedData={allComponents}
-				label={"المادة الفعالة"}
-				errors={fields.activeComponents.errors}
-				onSelectionChange={(selected) => setSelectedComponents(selected)}
-				defaultValues={oneProduct?.activeComponents}
-			/>
-
-			{/* تحديد تركيز ووحدات المواد الفعالة المختارة */}
-			{selectedComponents.length > 0 && (
-				<Card className="p-4 border border-border rounded-lg bg-muted/10 space-y-4">
-					<CardHeader>
-						<CardTitle>تحديد تركيز ووحدات المواد الفعالة المختارة</CardTitle>
-					</CardHeader>
-					<CardContent className="flex flex-col gap-6">
-						{selectedComponents.map((currentComp, index) => {
-							const baseName = `${fields.activeComponents.name}[${index}]`
-
-							// البحث عن القيمة المخزنة مسبقاً لهذا العنصر بالتحديد في قاعدة البيانات إن وجدت
-							const existingData = oneProduct?.activeComponents?.find(
-								(item: any) => item.componentId === currentComp.id,
-							)
-
-							return (
-								<div
-									key={currentComp.id}
-									className="flex flex-col gap-2 border-b border-border/40 pb-4 last:border-none last:pb-0"
-								>
-									<div className="flex items-end justify-center gap-6">
-										<Badge variant="outline" className="h-9 px-3 text-sm">
-											{currentComp.title}
-										</Badge>
-										<Input type="hidden" name={`${baseName}.componentId`} value={currentComp.id} />
-
-										{/* حقل إدخال التركيز */}
-										<Field className="flex-1">
-											<FieldLabel>التركيز</FieldLabel>
-											<Input
-												type="number"
-												name={`${baseName}.concentration`}
-												placeholder="أدخل التركيز"
-												// نستخدم القيمة القادمة من الـ Database كـ fallback أساسي لضمان ظهور البيانات أثناء التعديل
-												defaultValue={existingData?.concentration ?? ""}
-												step={"any"}
-											/>
-										</Field>
-
-										{/* حقل اختيار وحدة القياس */}
-										<Field className="flex-1">
-											<FieldLabel>وحدة القياس</FieldLabel>
-											<Select name={`${baseName}.unit`} defaultValue={existingData?.unit || ComponentUnit.percentage}>
-												<SelectTrigger>
-													<SelectValue />
-												</SelectTrigger>
-												<SelectContent>
-													{Object.values(ComponentUnit).map((unit, uIdx) => (
-														<SelectItem value={unit} key={uIdx}>
-															{unit}
-														</SelectItem>
-													))}
-												</SelectContent>
-											</Select>
-										</Field>
-									</div>
-								</div>
-							)
-						})}
-					</CardContent>
-				</Card>
-			)}
 
 			{/* ----------------------- size , Unit , productUrl ---------------------- */}
 			<div className="flex lg:flex-row items-center flex-col gap-4">

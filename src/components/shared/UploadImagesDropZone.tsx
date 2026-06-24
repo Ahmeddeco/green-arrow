@@ -76,6 +76,7 @@ export function UploadManyImagesDropZone({ dbImages, label = "images", imagesNam
 										src={image}
 										alt="Product Image"
 										fill
+										sizes="(max-width: 1024px) 100vw, (max-width: 1280px) 50vw, 600px"
 										className="w-full h-full object-cover rounded-lg border border-border p-1"
 									/>
 
@@ -149,6 +150,7 @@ export function UploadOneImagesDropZone({ dbImage, label = "image", imageName = 
 									src={image}
 									alt="Product Image"
 									fill
+									sizes="(max-width: 1024px) 100vw, (max-width: 1280px) 50vw, 600px"
 									className="w-full h-full object-cover rounded-lg border border-border p-1"
 								/>
 

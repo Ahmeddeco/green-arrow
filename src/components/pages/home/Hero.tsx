@@ -10,7 +10,13 @@ export default function Hero() {
 		<section className="lg:h-[80vh] h-auto flex lg:flex-row flex-col items-center justify-center bg-card pb-0 ">
 			{/* --------------------------------- Image --------------------------------- */}
 			<div className="size-full relative">
-				<Image src={"/images/hero.webp"} alt={"hero section"} fill className="object-contain" />
+				<Image
+					src={"/images/hero.webp"}
+					alt={"hero section"}
+					fill
+					className="object-contain"
+					sizes="(max-width: 1024px) 100vw, (max-width: 1280px) 50vw, 600px"
+				/>
 			</div>
 
 			{/* ---------------------------------- Text --------------------------------- */}

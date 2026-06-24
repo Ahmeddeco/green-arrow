@@ -11,20 +11,26 @@ export default function FrontNavigation() {
 
 	return (
 		<>
-			{frontNavLinks.map((link) => (
-				<Button
-					asChild
-					key={link.title}
-					variant={pathName === link.href ? "default" : "ghost"}
-					size={"sm"}
-					className="rounded-full"
-				>
-					<Link href={link.href}>
-						{pathName === link.href ? React.createElement(link.icon) : null}
-						{link.title}
-					</Link>
-				</Button>
-			))}
+			{frontNavLinks.map((link) => {
+				const isActive =
+					pathName === link.href ||
+					(link.href !== "/" && pathName.startsWith(`${link.href}/`)) ||
+					(link.href !== "/" && pathName.startsWith(link.href))
+				return (
+					<Button
+						asChild
+						key={link.title}
+						variant={isActive ? "default" : "ghost"}
+						size={"sm"}
+						className="rounded-full"
+					>
+						<Link href={link.href}>
+							{isActive ? React.createElement(link.icon) : null}
+							{link.title}
+						</Link>
+					</Button>
+				)
+			})}
 		</>
 	)
 }
