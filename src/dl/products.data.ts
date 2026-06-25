@@ -65,3 +65,16 @@ export const getOneProductForProductDetailsPage = async (id: string) => {
     console.error(error)
   }
 }
+
+/* ----------------------- getProductsByCategoryForBot ---------------------- */
+export const getProductsByCategoryForBot = async (category: Category) => {
+  try {
+    return await prisma.product.findMany({
+      where: { category },
+      include: { factory: { select: { name: true } }, activeComponents: { select: { component: true, concentration: true } } },
+      orderBy: { title: "asc" }
+    })
+  } catch (error) {
+    console.error(error)
+  }
+}

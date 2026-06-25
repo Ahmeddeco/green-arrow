@@ -1,5 +1,4 @@
 
-import { Mastra } from '@mastra/core/mastra'
 import { LibSQLStore } from '@mastra/libsql'
 import { MastraCompositeStore } from '@mastra/core/storage'
 import { weatherWorkflow } from './workflows/weather-workflow'
@@ -8,9 +7,12 @@ import { agricultureAgent } from "./agents/agriculture-agent"
 import { MastraEditor } from '@mastra/editor'
 import { stagehandAgent } from "./agents/stagehand-agent"
 import { browserAgent } from "./agents/browser-agent"
+import { Mastra } from "@mastra/core"
+import { agricultureWorkflow } from "./workflows/agriculture-workflow"
+import { agricultureTreatmentWorkflow } from "./workflows/agriculture-treatment-workflow"
 
 export const mastra = new Mastra({
-  workflows: { weatherWorkflow },
+  workflows: { weatherWorkflow, agricultureWorkflow, agricultureTreatmentWorkflow },
   agents: { weatherAgent, agricultureAgent, stagehandAgent, browserAgent },
   editor: new MastraEditor(),
   storage: new MastraCompositeStore({

@@ -16,7 +16,6 @@ type Props = {
 export default async function ProductDetailsPage({ params }: Props) {
 	const id = (await params).id
 	const product: getOneProductForProductDetailsPageType = await getOneProductForProductDetailsPage(id)
-	console.log("product from ProductDetailsPage", product)
 
 	return (
 		<section className="mx-auto container  ">

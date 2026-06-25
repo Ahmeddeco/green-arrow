@@ -19,9 +19,6 @@ export const stagehandAgent = new Agent({
   model: ollama("gemma4:12b"),
   browser,
   instructions: `You are a web automation assistant.
-
-Use stagehand tools to interact with pages:
-- stagehand_navigate to go to "https://shouraonline.com/"
 `,
   memory: new Memory(),
 })

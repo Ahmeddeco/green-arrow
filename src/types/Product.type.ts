@@ -1,4 +1,4 @@
-import { getAllProductsForServerProductsPage, getAllProductWithCategoryForProductCard, getOneProductForEditProductPage, getOneProductForProductDetailsPage } from "@/dl/products.data"
+import { getAllProductsForServerProductsPage, getAllProductWithCategoryForProductCard, getOneProductForEditProductPage, getOneProductForProductDetailsPage, getProductsByCategoryForBot } from "@/dl/products.data"
 import { Category, ProductUnit, } from "@/generated/prisma/enums"
 
 /* ---------------------------- ProductCardType ---------------------------- */
@@ -28,3 +28,4 @@ export type getAllProductsForServerProductsPageType = Awaited<ReturnType<typeof 
 export type getOneProductForEditProductPageType = Awaited<ReturnType<typeof getOneProductForEditProductPage>>
 export type getAllProductWithCategoryForProductCardType = Awaited<ReturnType<typeof getAllProductWithCategoryForProductCard>>
 export type getOneProductForProductDetailsPageType = Awaited<ReturnType<typeof getOneProductForProductDetailsPage>>
+export type getProductsByCategoryForBotType = Awaited<ReturnType<typeof getProductsByCategoryForBot>>

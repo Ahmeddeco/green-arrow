@@ -60,7 +60,7 @@ export const ourCategories = [
   {
     title: "مبيدات فطرية",
     icon: FaBacterium,
-    category: "fungi"
+    category: CategorySchema.Enum.fungicides
   },
   {
     title: "مبيدات أكاروس",

@@ -1,5 +1,5 @@
-import { createStep, createWorkflow } from '@mastra/core/workflows';
-import { z } from 'zod';
+import { createStep, createWorkflow } from '@mastra/core/workflows'
+import { z } from 'zod'
 
 const forecastSchema = z.object({
   date: z.string(),
@@ -41,23 +41,23 @@ const fetchWeather = createStep({
   outputSchema: forecastSchema,
   execute: async ({ inputData }) => {
     if (!inputData) {
-      throw new Error('Input data not found');
+      throw new Error('Input data not found')
     }
 
-    const geocodingUrl = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(inputData.city)}&count=1`;
-    const geocodingResponse = await fetch(geocodingUrl);
+    const geocodingUrl = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(inputData.city)}&count=1`
+    const geocodingResponse = await fetch(geocodingUrl)
     const geocodingData = (await geocodingResponse.json()) as {
-      results: { latitude: number; longitude: number; name: string }[];
-    };
+      results: { latitude: number; longitude: number; name: string }[]
+    }
 
     if (!geocodingData.results?.[0]) {
-      throw new Error(`Location '${inputData.city}' not found`);
+      throw new Error(`Location '${inputData.city}' not found`)
     }
 
-    const { latitude, longitude, name } = geocodingData.results[0];
+    const { latitude, longitude, name } = geocodingData.results[0]
 
-    const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=precipitation,weathercode&timezone=auto,&hourly=precipitation_probability,temperature_2m`;
-    const response = await fetch(weatherUrl);
+    const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=precipitation,weathercode&timezone=auto,&hourly=precipitation_probability,temperature_2m`
+    const response = await fetch(weatherUrl)
     const data = (await response.json()) as {
       current: {
         time: string
@@ -82,9 +82,9 @@ const fetchWeather = createStep({
       location: name
     }
 
-    return forecast;
+    return forecast
   },
-});
+})
 
 
 const planActivities = createStep({
@@ -101,9 +101,9 @@ const planActivities = createStep({
       throw new Error('Forecast data not found')
     }
 
-    const agent = mastra?.getAgent('weatherAgent');
+    const agent = mastra?.getAgent('weatherAgent')
     if (!agent) {
-      throw new Error('Weather agent not found');
+      throw new Error('Weather agent not found')
     }
 
     const prompt = `Based on the following weather forecast for ${forecast.location}, suggest appropriate activities:
@@ -146,27 +146,27 @@ const planActivities = createStep({
       - Consider activity intensity based on temperature
       - Keep descriptions concise but informative
 
-      Maintain this exact formatting for consistency, using the emoji and section headers as shown.`;
+      Maintain this exact formatting for consistency, using the emoji and section headers as shown.`
 
     const response = await agent.stream([
       {
         role: 'user',
         content: prompt,
       },
-    ]);
+    ])
 
-    let activitiesText = '';
+    let activitiesText = ''
 
     for await (const chunk of response.textStream) {
-      process.stdout.write(chunk);
-      activitiesText += chunk;
+      process.stdout.write(chunk)
+      activitiesText += chunk
     }
 
     return {
       activities: activitiesText,
-    };
+    }
   },
-});
+})
 
 const weatherWorkflow = createWorkflow({
   id: 'weather-workflow',
@@ -178,8 +178,8 @@ const weatherWorkflow = createWorkflow({
   })
 })
   .then(fetchWeather)
-  .then(planActivities);
+  .then(planActivities)
 
-weatherWorkflow.commit();
+weatherWorkflow.commit()
 
-export { weatherWorkflow };
+export { weatherWorkflow }
