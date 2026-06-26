@@ -10,6 +10,7 @@ import { browserAgent } from "./agents/browser-agent"
 import { Mastra } from "@mastra/core"
 import { agricultureWorkflow } from "./workflows/agriculture-workflow"
 import { agricultureTreatmentWorkflow } from "./workflows/agriculture-treatment-workflow"
+import { chatRoute } from "@mastra/ai-sdk"
 
 export const mastra = new Mastra({
   workflows: { weatherWorkflow, agricultureWorkflow, agricultureTreatmentWorkflow },
@@ -22,4 +23,12 @@ export const mastra = new Mastra({
       url: "file:./mastra.db",
     }),
   }),
+  server: {
+    apiRoutes: [
+      chatRoute({
+        path: '/chat',
+        agent: 'agricultureAgent',
+      }),
+    ],
+  },
 })

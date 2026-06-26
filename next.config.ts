@@ -14,6 +14,7 @@ const nextConfig: NextConfig = {
   typescript: {
     ignoreBuildErrors: true
   },
+  serverExternalPackages: ["@mastra/*"],
 }
 
 export default nextConfig

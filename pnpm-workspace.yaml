@@ -1,5 +1,6 @@
 allowBuilds:
   '@google/genai': true
+  '@hugeicons/svelte': true
   '@prisma/engines': true
   agent-browser: true
   bufferutil: true
