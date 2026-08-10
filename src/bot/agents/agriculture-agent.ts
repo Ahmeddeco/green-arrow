@@ -7,6 +7,7 @@ import { stagehandAgent } from "./stagehand-agent"
 import { getProductsByCategoryTool } from "../tools/get-product-by-category-tool"
 import { agricultureTreatmentWorkflow } from "../workflows/agriculture-treatment-workflow"
 import { triggerTreatmentWorkflowTool } from "../tools/trigger-treatment-workflow-tool"
+import { storage } from "@/bot/storage"
 
 export const agricultureAgent = new Agent({
    id: 'agriculture-agent',
@@ -37,11 +38,16 @@ export const agricultureAgent = new Agent({
 5- ذكر نصائح وارشادات اخرى بعد علاج الإصابة بالمبيد المناسب  لتحسين الانتاج وعدم تكرار العدوى.
 `,
 
-   model: ollama('gemma4:12b'),
    tools: { weatherTool, getProductsByCategoryTool, triggerTreatmentWorkflowTool },
    agents: { browserAgent, stagehandAgent },
-   memory: new Memory(),
-   workflows: { agricultureTreatmentWorkflow }
+   memory: new Memory({ storage }),
+   model: process.env.NODE_ENV === "production" ? "google/gemini-flash-latest" : ollama("gemma4:e2b-it-qat"),
+   workflows: { agricultureTreatmentWorkflow },
+   skills: [
+      "../skills/copywriting",
+      "../skills/marketing-psychology",
+      "../skills/product-marketing",
+   ],
 })
 
 
