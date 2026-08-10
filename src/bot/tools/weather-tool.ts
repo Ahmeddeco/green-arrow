@@ -115,7 +115,7 @@ const getWeather = async (location: string, originalName: string) => {
     throw new Error(`لم يتم العثور على الموقع: '${originalName}'`)
   }
 
-  const { latitude, longitude, name } = geocodingData.results[0]
+  const { latitude, longitude, } = geocodingData.results[0]
 
   const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,apparent_temperature,relative_humidity_2m,wind_speed_10m,wind_gusts_10m,weather_code`
 

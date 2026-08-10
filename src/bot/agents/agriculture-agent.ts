@@ -2,8 +2,6 @@ import { Agent } from '@mastra/core/agent'
 import { Memory } from '@mastra/memory'
 import { ollama } from 'ollama-ai-provider-v2'
 import { weatherTool } from "../tools/weather-tool"
-import { browserAgent } from "./browser-agent"
-import { stagehandAgent } from "./stagehand-agent"
 import { getProductsByCategoryTool } from "../tools/get-product-by-category-tool"
 import { agricultureTreatmentWorkflow } from "../workflows/agriculture-treatment-workflow"
 import { triggerTreatmentWorkflowTool } from "../tools/trigger-treatment-workflow-tool"
@@ -39,7 +37,6 @@ export const agricultureAgent = new Agent({
 `,
 
    tools: { weatherTool, getProductsByCategoryTool, triggerTreatmentWorkflowTool },
-   agents: { browserAgent, stagehandAgent },
    memory: new Memory({ storage }),
    model: process.env.NODE_ENV === "production" ? "google/gemini-flash-latest" : ollama("gemma4:e2b-it-qat"),
    workflows: { agricultureTreatmentWorkflow },

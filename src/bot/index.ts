@@ -3,8 +3,6 @@ import { weatherWorkflow } from './workflows/weather-workflow'
 import { weatherAgent } from './agents/weather-agent'
 import { agricultureAgent } from "./agents/agriculture-agent"
 import { MastraEditor } from '@mastra/editor'
-import { stagehandAgent } from "./agents/stagehand-agent"
-import { browserAgent } from "./agents/browser-agent"
 import { Mastra } from "@mastra/core"
 import { agricultureWorkflow } from "./workflows/agriculture-workflow"
 import { agricultureTreatmentWorkflow } from "./workflows/agriculture-treatment-workflow"
@@ -13,7 +11,7 @@ import { storage } from "./storage"
 
 export const mastra = new Mastra({
   workflows: { weatherWorkflow, agricultureWorkflow, agricultureTreatmentWorkflow },
-  agents: { weatherAgent, agricultureAgent, stagehandAgent, browserAgent },
+  agents: { weatherAgent, agricultureAgent, },
   editor: new MastraEditor(),
   storage,
   server: {
