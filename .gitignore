@@ -2,8 +2,6 @@
 
 # dependencies
 /node_modules
-/.mastra
-/.next
 /.pnp
 .pnp.*
 .yarn/*
@@ -17,6 +15,8 @@
 
 # next.js
 /.next/
+/.mastra/
+/.agents/
 /out/
 
 # production
@@ -34,12 +34,11 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+TODO.md
 
 # vercel
 .vercel
-
 # typescript
 *.tsbuildinfo
 next-env.d.ts
-
-/src/generated/*
+# mastra*

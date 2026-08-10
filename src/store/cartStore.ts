@@ -16,7 +16,6 @@ type CartState = {
   items: CartItem[]
   addToCart: (product: ProductCardType) => void
   removeFromCart: (id: string) => void
-  updateQuantityByHalf: (type: 'increment' | 'decrement', id: string) => void
   updateQuantityByOnes: (type: 'increment' | 'decrement', id: string) => void
 }
 
@@ -38,7 +37,7 @@ export const useCartStore = create<CartState>()(
                 title: product!.title,
                 price: product!.price,
                 image: product!.mainImage,
-                increaseByOne: product?.increaseByOne ?? false
+                increaseByOne: true
               },
             ],
         })
@@ -58,24 +57,6 @@ export const useCartStore = create<CartState>()(
 
       },
 
-      /* -------------------------- updateQuantityByHalf -------------------------- */
-      updateQuantityByHalf: (type, id) => {
-        set({
-          items: get().items.map((item) =>
-            item.id === id
-              ? {
-                ...item,
-                quantity:
-                  type === "increment"
-                    ? item.quantity + .5
-
-                    : Math.max(1, item.quantity - .5), // preventing the quantity from going below .5 when decrementing.
-              }
-              : item
-          ),
-        })
-      },
-
       /* -------------------------- updateQuantityByOnes -------------------------- */
       updateQuantityByOnes: (type, id) => {
         set({
@@ -93,6 +74,6 @@ export const useCartStore = create<CartState>()(
           ),
         })
       }
-    }), { name: 'cart-storage' }
+    }), { name: 'green-arrow-cart' }
   )
 )
